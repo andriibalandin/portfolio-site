@@ -20,7 +20,9 @@ class ProductListView(ListView):
     context_object_name = 'products'
 
     def get_queryset(self):
-        return GeneralProduct.objects.all().union(VinylRecord.objects.all())
+        general_products = GeneralProduct.objects.all()
+        vinyl_records = VinylRecord.objects.all()
+        return list(general_products) + list(vinyl_records)
 
 
 class ProductDetailView(DetailView):
