@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html lang="uk">
+<head>
+    {% load static %}
+    <meta charset="UTF-8">
+    <title>{% block title %}Магазин вінілових платівок{% endblock %}</title>
+    <link rel="stylesheet" href="{% static 'shop/css/style.css' %}">
+</head>
+<body>
+    <header>
+        <nav>
+            <a href="{% url 'index' %}">Головна</a> 
+            <a href="#">Блог</a> {# {% url 'blog:posts' %} #}  
+            <a href="#">Кошик</a> {# {% url 'cart:cart' %} #}
+            {% if user.is_authenticated %}
+                <a href="# ">Профіль</a> {# {% url 'users:profile' %} #}
+                <a href="#">Вийти</a> {# {% url 'users:logout' %} #}
+            {% else %}
+                <a href="#">Увійти</a> {# {% url 'users:login' %} #}
+            {% endif %}
+        </nav>
+    </header>
+    <main>
+        {% block content %}
+        {% endblock %}
+    </main>
+</body>
+</html>

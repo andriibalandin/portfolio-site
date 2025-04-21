@@ -1,10 +1,32 @@
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Index</title>
-</head>
-<body>
-    <h1>Index</h1>
-</body>
-</html>
+{% extends 'shop/base.html' %}
+{% block content %}
+    <h1>Вітаємо в вагазині вінілових платівок!</h1>
+    <h2>Новинки!</h2>
+        {% for product in new_products %}
+            <div>
+                <a href="{{ product.get_absolute_url }}">{{ product.name }}</a>
+                <p>{{ product.get_discounted_price }} грн</p>
+            </div>  
+        {% endfor %}
+        {% for product in new_vinyl %}
+            <div>
+                <a href="{{ product.get_absolute_url }}">{{ product.name }}</a>
+                <p>{{ product.get_discounted_price }} грн</p>
+                <p>Виконавець: {{ product.artist }}</p>
+            </div>
+        {% endfor %}
+    <h2>Знижки!</h2>
+        {% for product in discounted_products %}
+            <div>
+                <a href="{{ product.get_absolute_url }}">{{ product.name }}</a>
+                <p>{{ product.get_discounted_price }}</p>
+            </div>
+        {% endfor %}
+        {% for product in discounted_vinyl %}
+            <div>
+                <a href="{{ product.get_absolute_url }}">{{ product.name }}</a>
+                <p>{{ product.get_discounted_price }}</p>
+                <p>Виконавець: {{ product.artist }}</p>
+            </div>
+        {% endfor %}
+{% endblock %}

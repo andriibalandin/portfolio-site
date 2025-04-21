@@ -1,0 +1,13 @@
+{% extends 'shop/base.html' %}
+{% block content %}
+    <h1>Каталог</h1>
+    {% for product in products %}
+        <div>
+            <a href="{{ product.get_absolute_url }}">{{ product.name }}</a>
+            <p>{{ product.get_discounted_price }} грн</p>
+            {% if product.is_vinyl_record %}
+                <p>Виконавець: {{ product.artist }}</p>
+            {% endif %}
+        </div>
+    {% endfor %}
+{% endblock %}

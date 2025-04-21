@@ -1,2 +1,3 @@
 venv/
-*.sqlite3
+.vscode/
+.portfolio_site/db.sqlite3

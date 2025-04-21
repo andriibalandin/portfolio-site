@@ -1,0 +1,17 @@
+{% extends 'shop/base.html' %}
+{% block content %}
+    <h1>{{ product.name }}</h1>
+    {% if product.image %}
+        <img src="{{ product.image.url }}" alt="{{ product.title }}">
+    {% else %}
+        <p>Зображення відсутнє</p>
+    {% endif %}
+    <p>{{ product.description }}</p>
+    <p>Ціна: {{ product.get_discounted_price }} грн</p>
+    {% if product.is_vinyl_record %}
+        <p>Виконавець: {{ product.artist }}</p>
+        <p>Рік випуску: {{ product.release_year }}</p>
+        <p>Жанр: {{ product.genre.name }}</p>
+    {% endif %}
+    <a href="#">Додати в кошик</a> {# {% url 'cart:add_to_cart' product.id %} #}
+{% endblock %}
