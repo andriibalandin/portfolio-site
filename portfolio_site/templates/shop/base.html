@@ -12,12 +12,15 @@
             <a href="{% url 'shop:index' %}">Головна</a> 
             <a href="{% url 'shop:product_list' %}">Каталог</a>
             <a href="{% url 'blog:posts' %}">Блог</a>
-            <a href="#">Кошик</a> {# {% url 'cart:cart' %} #}
+            <a href="{% url 'cart:cart' %}">Кошик</a> 
             {% if user.is_authenticated %}
-                <a href="{% url 'users:profile' %} ">Профіль</a> {# {% url 'users:profile' %} #}
-                <a href="{% url 'users:logout' %}">Вийти</a> {# {% url 'users:logout' %} #}
+                <a href="{% url 'users:profile' %} ">Профіль</a> 
+                <form action="{% url 'users:logout' %}" method="post">
+                    {% csrf_token %}
+                    <button type="submit">Вийти</button>
+                </form> 
             {% else %}
-                <a href="{% url 'users:login' %}">Увійти</a> {# {% url 'users:login' %} #}
+                <a href="{% url 'users:login' %}">Увійти</a> 
             {% endif %}
         </nav>
     </header>

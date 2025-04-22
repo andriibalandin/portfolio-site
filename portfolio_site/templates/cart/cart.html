@@ -1,0 +1,13 @@
+{% extends 'shop/base.html' %}
+{% block content %}
+    <h1>Кошик</h1>
+    {% for item in cart.cartitem_set.all %}
+        <div>
+            <p>{{ item.product.name }}</p>
+            <p>Кількість: {{ item.quantity }}</p>
+            <p>Вартість: {{ item.get_total_price }} грн</p>
+        </div>
+    {% empty %}
+        <p>Кошик порожній</p>
+    {% endfor %}
+{% endblock %}
