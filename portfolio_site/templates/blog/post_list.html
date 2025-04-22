@@ -1,0 +1,13 @@
+{% extends 'shop/base.html' %}
+{% block content %}
+    <h1>Блог</h1>
+    {% for post in posts %}
+        <div>
+            <a href="{{ post.get_absolute_url }}">{{ post.title }}</a>
+            <p>Автор: {{ post.author.username }}</p>
+            <p>Категорія: {{ post.category.name }}</p>
+        </div>
+    {% empty %}
+        <h2>Пости відсутні</h2>
+    {% endfor %}
+{% endblock %}
