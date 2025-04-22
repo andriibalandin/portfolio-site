@@ -14,10 +14,10 @@
             <a href="#">Блог</a> {# {% url 'blog:posts' %} #}  
             <a href="#">Кошик</a> {# {% url 'cart:cart' %} #}
             {% if user.is_authenticated %}
-                <a href="# ">Профіль</a> {# {% url 'users:profile' %} #}
-                <a href="#">Вийти</a> {# {% url 'users:logout' %} #}
+                <a href="{% url 'users:profile' %} ">Профіль</a> {# {% url 'users:profile' %} #}
+                <a href="{% url 'users:logout' %}">Вийти</a> {# {% url 'users:logout' %} #}
             {% else %}
-                <a href="#">Увійти</a> {# {% url 'users:login' %} #}
+                <a href="{% url 'users:login' %}">Увійти</a> {# {% url 'users:login' %} #}
             {% endif %}
         </nav>
     </header>

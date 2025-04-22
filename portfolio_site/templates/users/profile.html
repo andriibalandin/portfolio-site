@@ -1,0 +1,16 @@
+{% extends 'shop/base.html' %}
+{% block content %}
+    <h1>{{ user.username }}</h1>
+    {% if user.userprofile.avatar %}
+        <img src="{{ user.userprofile.avatar.url }}" alt="Аватар">
+    {% else %}
+        <p>Аватар відсутній</p>    
+    {% endif %}
+    <p>Підписка: {{ user.subscription.is_active | yesno:'Активна,Неактивна'}}</p>
+    {% for tracked in tracked_products %}
+        <p>{{ tracked.product.name }} ({{ tracked.content_type.model|capfirst }})</p>
+    {% empty %}
+        <p>Ви ще не відстежуєте товари</p>
+    {% endfor %}
+
+{% endblock %}
