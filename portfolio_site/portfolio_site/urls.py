@@ -16,8 +16,8 @@ Including another URLconf
 """
 from django.contrib import admin
 from django.urls import path, include
-from users.views import CustomLogoutView
 from django.conf.urls.static import static
+from django.contrib.auth.views import LogoutView
 from django.conf import settings
 
 urlpatterns = [
@@ -25,6 +25,6 @@ urlpatterns = [
     path('', include('shop.urls')),
     path('blog/', include('blog.urls')),
     path('accounts/', include('users.urls')),
-    path('admin/logout/', CustomLogoutView.as_view(), name='admin_logout'),
+    path('admin/logout/', LogoutView.as_view(next_page='/'), name='admin_logout'),
     path('cart/', include('cart.urls')),
 ]+ static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

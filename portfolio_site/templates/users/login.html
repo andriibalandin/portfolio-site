@@ -4,6 +4,7 @@
     <form method="post">
         {% csrf_token %}
         {{ form.as_p }}
-        <button type="submit">Увійти</button>
+        <button type="submit" class="login">Увійти</button>
     </form>
+    <p>Немає аккаунту? <a href="{% url 'users:register' %}">Зареєструватися</a></p>
 {% endblock %}

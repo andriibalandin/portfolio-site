@@ -18,9 +18,10 @@
                 <form action="{% url 'users:logout' %}" method="post">
                     {% csrf_token %}
                     <button type="submit">Вийти</button>
-                </form> 
+                </form>
             {% else %}
                 <a href="{% url 'users:login' %}">Увійти</a> 
+                <a href="{% url 'users:register' %}">Зареєструватися</a> 
             {% endif %}
         </nav>
     </header>
