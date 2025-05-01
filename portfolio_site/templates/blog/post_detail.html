@@ -5,4 +5,10 @@
     <p>Категорія: {{ post.category.name }}</p>
     <p>{{ post.content }}</p>
     <p>Лайки: {{ post.likes.count }}</p>
+
+    {% if request.user == post.author %}
+        <a href="{% url 'blog:post-update' post.slug %}">Редагувати</a>
+        <a href="{% url 'blog:post-delete' post.slug %}">Видалити</a>
+    {% endif %}
+
 {% endblock %}

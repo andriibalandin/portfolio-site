@@ -1,0 +1,9 @@
+{% extends 'shop/base.html' %}
+{% block content %}
+    <a href="{% url 'blog:posts' %}">Back</a>
+    <form method="post">
+        {% csrf_token %}
+        <p>Delete post {{ post.title }}?</p>
+        <input type="submit" value="Delete">
+    </form>
+{% endblock %}
