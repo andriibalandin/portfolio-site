@@ -77,3 +77,4 @@ class VinylRecord(BaseProduct):
     release_year = models.PositiveIntegerField()
     genre = models.ManyToManyField(Genre)
     category = models.ForeignKey(Category, on_delete=models.CASCADE, default=get_default_vinyl_category)
+    

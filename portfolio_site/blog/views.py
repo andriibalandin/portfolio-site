@@ -1,9 +1,11 @@
+from django.shortcuts import redirect
 from django.urls import reverse_lazy
 from django.views.generic import DetailView, UpdateView, DeleteView, CreateView, ListView
 from django.contrib.auth.mixins import LoginRequiredMixin
 from .models import Post
 from django.utils.text import slugify
 from .filters import PostFilter
+from users.models import Subscription
 
 
 class PostListView(ListView):
@@ -13,7 +15,7 @@ class PostListView(ListView):
 
     def get_queryset(self):
         queryset = Post.objects.all().select_related('author', 'category').prefetch_related('tags')
-        self.filterset = PostFilter(self.request.GET, queryset=queryset)
+        self.filterset = PostFilter(self.request.GET, queryset=queryset, request=self.request)
         return self.filterset.qs
 
     def get_context_data(self, **kwargs):
@@ -28,6 +30,11 @@ class PostCreateView(LoginRequiredMixin, CreateView):
     context_object_name = 'task'
     success_url = reverse_lazy('blog:posts')
     fields = ['title', 'content', 'category', 'tags']
+
+    def dispatch(self, request, *args, **kwargs):
+        if not Subscription.objects.filter(user=request.user, is_active=True).exists():
+            return redirect('users:subscribe')  # Redirect to subscription page
+        return super().dispatch(request, *args, **kwargs)
 
     def form_valid(self, form):
         form.instance.author = self.request.user

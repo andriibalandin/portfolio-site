@@ -1,16 +1,24 @@
 {% extends 'shop/base.html' %}
 {% block content %}
-    <h1>{{ user.username }}</h1>
-    {% if user.userprofile.avatar %}
-        <img src="{{ user.userprofile.avatar.url }}" alt="Аватар">
+  <h1>Профіль користувача {{ user.username }}</h1>
+  {% if user != request.user %}
+    {% if user.userprofile in request.user.userprofile.followed_authors.all %}
+      <a href="{% url 'users:unfollow_author' user.id %}">Відписатися</a>
     {% else %}
-        <p>Аватар відсутній</p>    
+      <a href="{% url 'users:follow_author' user.id %}">Підписатися</a>
     {% endif %}
-    <p>Підписка: {{ user.subscription.is_active | yesno:'Активна,Неактивна'}}</p>
-    {% for tracked in tracked_products %}
-        <p>{{ tracked.product.name }} ({{ tracked.content_type.model|capfirst }})</p>
-    {% empty %}
-        <p>Ви ще не відстежуєте товари</p>
-    {% endfor %}
-
+  {% endif %}
+  {% if user.userprofile.avatar %}
+    <img src="{{ user.userprofile.avatar.url }}" alt="Аватар">
+  {% else %}
+    <p>Аватар відсутній</p>
+  {% endif %}
+  <p>Підписка: {{ user_subscription.is_active|yesno:"Активна,Неактивна" }}</p>
+  <p><a href="{% url 'blog:posts' %}?only_followed=True">Пости відстежуваних авторів</a></p>
+  <h3>Відстежувані продукти</h3>
+  {% for tracked in tracked_products %}
+    <p>{{ tracked.product.name }} ({{ tracked.content_type.model|capfirst }})</p>
+  {% empty %}
+    <p>Відстежувані продукти відсутні.</p>
+  {% endfor %}
 {% endblock %}

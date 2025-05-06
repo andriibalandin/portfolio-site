@@ -1,14 +1,23 @@
 {% extends 'shop/base.html' %}
 {% block content %}
     <h1>{{ post.title }}</h1>
-    <p>Автор: {{ post.author.username }}</p>
-    <p>Категорія: {{ post.category.name }}</p>
+    <p>Автор: 
+        <a href="{% url 'users:profile' %}?user_id={{ post.author.id }}">{{ post.author.username }}</a></p>
+    </p>
+    <p>Категорія: 
+        <a href="{% url 'blog:posts' %}?category={{ post.category.id }}">{{ post.category.name }}</a>
+    </p>
+    <p>Теги:
+        {% for tag in post.tags.all %}
+            <a href="{% url 'blog:posts' %}?tags={{ tag.id }}">{{ tag.name }}</a>{% if not forloop.last %}, {% endif %}
+        {% empty %}
+            Немає
+        {% endfor %}
+    </p>
     <p>{{ post.content }}</p>
     <p>Лайки: {{ post.likes.count }}</p>
-
     {% if request.user == post.author %}
         <a href="{% url 'blog:post-update' post.slug %}">Редагувати</a>
         <a href="{% url 'blog:post-delete' post.slug %}">Видалити</a>
     {% endif %}
-
 {% endblock %}
