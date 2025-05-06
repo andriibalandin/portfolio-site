@@ -1,23 +1,37 @@
 {% extends 'shop/base.html' %}
 {% block content %}
-    <h1>{{ post.title }}</h1>
-    <p>Автор: 
-        <a href="{% url 'users:profile' %}?user_id={{ post.author.id }}">{{ post.author.username }}</a></p>
-    </p>
-    <p>Категорія: 
-        <a href="{% url 'blog:posts' %}?category={{ post.category.id }}">{{ post.category.name }}</a>
-    </p>
-    <p>Теги:
-        {% for tag in post.tags.all %}
-            <a href="{% url 'blog:posts' %}?tags={{ tag.id }}">{{ tag.name }}</a>{% if not forloop.last %}, {% endif %}
-        {% empty %}
-            Немає
-        {% endfor %}
-    </p>
-    <p>{{ post.content }}</p>
-    <p>Лайки: {{ post.likes.count }}</p>
-    {% if request.user == post.author %}
-        <a href="{% url 'blog:post-update' post.slug %}">Редагувати</a>
-        <a href="{% url 'blog:post-delete' post.slug %}">Видалити</a>
-    {% endif %}
+<div class="container">
+    <div class="row">
+        <div class="col-md-12">
+            <h1>{{ post.title }}</h1>
+            <p>Автор: 
+                <a href="{% url 'users:profile' %}?user_id={{ post.author.id }}">{{ post.author.username }}</a></p>
+            </p>
+            <p>Категорія: 
+                <a href="{% url 'blog:posts' %}?category={{ post.category.id }}">{{ post.category.name }}</a>
+            </p>
+            <p>Теги:
+                {% for tag in post.tags.all %}
+                    <a href="{% url 'blog:posts' %}?tags={{ tag.id }}">{{ tag.name }}</a>{% if not forloop.last %}, {% endif %}
+                {% empty %}
+                    Немає
+                {% endfor %}
+            </p>
+            <p>{{ post.content }}</p>
+            <p>Опубліковано: {{ post.created_at }}</p>
+            <p>Лайки: {{ like_count }}</p>
+            {% if user.is_authenticated %}
+                        <form action="{% url 'blog:like_post' post.slug %}" method="get" class="d-inline">
+                            <button type="submit" class="btn {% if is_liked %}btn-danger{% else %}btn-primary{% endif %}">
+                                {% if is_liked %}Unlike{% else %}Like{% endif %}
+                            </button>
+                        </form>
+                    {% endif %}
+            {% if request.user == post.author %}
+                <a href="{% url 'blog:post-update' post.slug %}">Редагувати</a>
+                <a href="{% url 'blog:post-delete' post.slug %}">Видалити</a>
+            {% endif %}
+        </div>
+    </div>
+</div>
 {% endblock %}

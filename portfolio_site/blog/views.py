@@ -1,5 +1,7 @@
-from django.shortcuts import redirect
-from django.urls import reverse_lazy
+from django.http import HttpResponseRedirect
+from django.shortcuts import get_object_or_404, redirect
+from django.urls import reverse, reverse_lazy
+from django.views import View
 from django.views.generic import DetailView, UpdateView, DeleteView, CreateView, ListView
 from django.contrib.auth.mixins import LoginRequiredMixin
 from .models import Post
@@ -12,6 +14,7 @@ class PostListView(ListView):
     model = Post
     template_name = 'blog/post_list.html'
     context_object_name = 'posts'
+    paginate_by = 5
 
     def get_queryset(self):
         queryset = Post.objects.all().select_related('author', 'category').prefetch_related('tags')
@@ -46,6 +49,23 @@ class PostDetailView(DetailView):
     model = Post
     template_name = 'blog/post_detail.html'
     context_object_name = 'post'
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        if self.request.user.is_authenticated:
+            context['is_liked'] = self.request.user in self.object.likes.all()
+        context['like_count'] = self.object.likes.count()
+        return context
+
+
+class LikePostView(LoginRequiredMixin, View):
+    def get(self, request, slug):
+        post = get_object_or_404(Post, slug=slug)
+        if request.user in post.likes.all():
+            post.likes.remove(request.user) 
+        else:
+            post.likes.add(request.user) 
+        return HttpResponseRedirect(reverse('blog:post_detail', args=[slug]))
 
 
 class PostUpdateView(LoginRequiredMixin, UpdateView):
