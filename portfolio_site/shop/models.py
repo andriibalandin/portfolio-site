@@ -1,5 +1,8 @@
 from django.db import models
 from django.urls import reverse
+from django.contrib.auth.models import User
+from django.db.models import Avg
+
 
 class Category(models.Model):
     name = models.CharField(max_length=100)
@@ -15,12 +18,14 @@ class Genre(models.Model):
     def __str__(self):
         return self.name
 
+
 class Artist(models.Model):
     name = models.CharField(max_length=225)
     slug = models.SlugField(unique=True)
 
     def __str__(self):
         return self.name
+
 
 class Manufacturer(models.Model):
     name = models.CharField(max_length=100)
@@ -29,6 +34,7 @@ class Manufacturer(models.Model):
 
     def __str__(self):
         return self.name
+
 
 class Product(models.Model):
     category = models.ForeignKey(Category, on_delete=models.CASCADE)
@@ -56,3 +62,22 @@ class Product(models.Model):
             return round(self.price * (1 - self.discount/100), 2)
         return self.price
     
+    def update_rating(self):
+        avg_rating = self.reviews.aggregate(Avg('rating'))['rating__avg']
+        self.rating = round(avg_rating or 0.0, 1)
+        self.save()
+
+
+class Review(models.Model):
+    product = models.ForeignKey(Product, related_name='reviews', on_delete=models.CASCADE)
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
+    rating = models.PositiveIntegerField(choices=[(i, i) for i in range(1, 6)])
+    comment = models.TextField()
+    created_at = models.DateTimeField(auto_now_add=True)
+
+    def __str__(self):
+        return f"{self.user.username} - {self.product.name} ({self.rating})"
+
+    class Meta:
+        unique_together = ('product', 'user')
+        

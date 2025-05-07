@@ -1,13 +1,39 @@
 {% extends 'shop/base.html' %}
 {% block content %}
     <h1>Кошик</h1>
-    {% for item in cart.cartitem_set.all %}
-        <div>
-            <p>{{ item.product.name }}</p>
-            <p>Кількість: {{ item.quantity }}</p>
-            <p>Вартість: {{ item.get_total_price }} грн</p>
-        </div>
-    {% empty %}
+    {% if cart.cartitem_set.exists %}
+        <table>
+            <thead>
+                <tr>
+                    <th>Товар</th>
+                    <th>Кількість</th>
+                    <th>Ціна</th>
+                    <th>Всього</th>
+                    <th>Дії</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for item in cart.cartitem_set.all %}
+                    <tr>
+                        <td>{{ item.product.name }}</td>
+                        <td>
+                            <form action="{% url 'cart:update_cart_item' item.id %}" method="post">
+                                {% csrf_token %}
+                                <input type="number" name="quantity" value="{{ item.quantity }}" min="1">
+                                <button type="submit">Оновити</button>
+                            </form>
+                        </td>
+                        <td>{{ item.product.get_discounted_price }} грн</td>
+                        <td>{{ item.get_total_price }} грн</td>
+                        <td>
+                            <a href="{% url 'cart:remove_cart_item' item.id %}">Видалити</a>
+                        </td>
+                    </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+        <p><strong>Загальна сума: {{ cart.get_total }} грн</strong></p>
+    {% else %}
         <p>Кошик порожній</p>
-    {% endfor %}
+    {% endif %}
 {% endblock %}

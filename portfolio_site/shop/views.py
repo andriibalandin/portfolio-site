@@ -1,8 +1,10 @@
 from django.http import Http404
-from django.shortcuts import render
+from django.shortcuts import render, redirect
 from django.views.generic import TemplateView, ListView, DetailView
+from django.contrib.auth.mixins import LoginRequiredMixin
 from .models import Category, Product, Genre
 from .filters import ProductFilter
+from .forms import ReviewForm
 
 class HomeView(TemplateView):
     template_name = 'shop/index.html'
@@ -37,5 +39,22 @@ class ProductDetailView(DetailView):
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        context['product_type'] = 'vinyl' if self.object.category.slug == 'vinyl-records' else 'general'
+        context['review_form'] = ReviewForm()
         return context
+
+    def post(self, request, *args, **kwargs):
+        product = self.get_object()
+        if not request.user.is_authenticated:
+            return redirect('login')
+        form = ReviewForm(request.POST)
+        if form.is_valid():
+            review = form.save(commit=False)
+            review.product = product
+            review.user = request.user
+            review.save()
+            product.update_rating()
+            return redirect(product.get_absolute_url())
+        context = self.get_context_data()
+        context['review_form'] = form
+        return self.render_to_response(context)
+    

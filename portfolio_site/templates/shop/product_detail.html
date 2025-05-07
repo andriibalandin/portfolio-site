@@ -3,17 +3,41 @@
 <div class="container">
     <h1>{{ product.name }}</h1>
     {% if product.image %}
-        <img src="{{ product.image.url }}" alt="{{ product.name }}" class="img-fluid">
+        <img src="{{ product.image.url }}" alt="{{ product.name }}" class="img-fluid mb-3">
     {% else %}
         <p>Зображення відсутнє</p>
     {% endif %}
     <p>{{ product.description }}</p>
     <p>Ціна: {{ product.get_discounted_price }} грн</p>
+    <p>Середній рейтинг: {{ product.rating }}</p>
     {% if product.category.slug == 'vinyl-records' %}
         <p>Виконавець: {{ product.artist }}</p>
         <p>Рік випуску: {{ product.release_year }}</p>
         <p>Жанр: {{ product.genre.all|join:", " }}</p>
     {% endif %}
-    <a href="{% url 'cart:add_to_cart' product_type=product_type product_id=product.id %}" class="btn btn-primary">Додати в кошик</a>
+    <a href="{% url 'cart:add_to_cart' product_id=product.id %}" class="btn btn-primary mb-3">Додати в кошик</a>
+    <hr>
+    <h3>Відгуки</h3>
+    {% for review in product.reviews.all %}
+        <div class="card mb-2">
+            <div class="card-body">
+                <p class="card-text">{{ review.comment }}</p>
+                <p class="card-text">Оцінка: {{ review.rating }}/5</p>
+                <p class="card-text text-muted">Автор: {{ review.user.username }} | {{ review.created_at|date:"d.m.Y H:i" }}</p>
+            </div>
+        </div>
+    {% empty %}
+        <p>Відгуки відсутні.</p>
+    {% endfor %}
+    {% if user.is_authenticated %}
+        <h4>Додати відгук</h4>
+        <form method="post">
+            {% csrf_token %}
+            {{ review_form.as_p }}
+            <button type="submit" class="btn btn-primary">Надіслати</button>
+        </form>
+    {% else %}
+        <p><a href="{% url 'login' %}">Увійдіть</a>, щоб залишити відгук.</p>
+    {% endif %}
 </div>
 {% endblock %}
