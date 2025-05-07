@@ -1,7 +1,7 @@
 from django.shortcuts import redirect, get_object_or_404
 from django.views.generic import DetailView
 from .models import Cart, CartItem
-from shop.models import GeneralProduct, VinylRecord
+from shop.models import Product
 from django.contrib.contenttypes.models import ContentType
 
 
@@ -15,9 +15,9 @@ class CartView(DetailView):
 
 def add_to_cart(request, product_id, product_type):
     if product_type == 'general':
-        product = get_object_or_404(GeneralProduct, id=product_id)
+        product = get_object_or_404(Product, id=product_id)
     elif product_type == 'vinyl':
-        product = get_object_or_404(VinylRecord, id=product_id)
+        product = get_object_or_404(Product, id=product_id)
     else:
         raise ValueError("Невідомий тип продукту")
     

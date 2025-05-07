@@ -1,51 +1,41 @@
 from django.http import Http404
 from django.shortcuts import render
-from .models import Category, GeneralProduct, VinylRecord, Genre
 from django.views.generic import TemplateView, ListView, DetailView
-
+from .models import Category, Product, Genre
+from .filters import ProductFilter
 
 class HomeView(TemplateView):
     template_name = 'shop/index.html'
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        context['new_products'] = GeneralProduct.objects.filter(is_new=True)[:3] #мабуть додати ще фільтр для жанрів
-        context['new_vinyl'] = VinylRecord.objects.filter(is_new=True)[:3]
-        context['discounted_products'] = GeneralProduct.objects.filter(discount__isnull=False)[:3]
-        context['discounted_vinyl'] = VinylRecord.objects.filter(discount__isnull=False)[:3]
+        context['new_products'] = Product.objects.filter(is_new=True, category__slug='other')[:3]
+        context['new_vinyl'] = Product.objects.filter(is_new=True, category__slug='vinyl-records')[:3]
+        context['discounted_products'] = Product.objects.filter(discount__isnull=False, category__slug='other')[:3]
+        context['discounted_vinyl'] = Product.objects.filter(discount__isnull=False, category__slug='vinyl-records')[:3]
         return context
-    
 
 class ProductListView(ListView):
     template_name = 'shop/product_list.html'
     context_object_name = 'products'
+    paginate_by = 10
 
     def get_queryset(self):
-        general_products = GeneralProduct.objects.all()
-        vinyl_records = VinylRecord.objects.all()
-        return list(general_products) + list(vinyl_records)
-
-
-class ProductDetailView(DetailView):
-    template_name = 'shop/product_detail.html'
-    context_object_name = 'product'
-
-    def get_object(self, queryset=None):
-        slug = self.kwargs.get('slug')
-        try:
-            product = GeneralProduct.objects.get(slug=slug)
-            self.product_type = 'general'
-            return product
-        except GeneralProduct.DoesNotExist:
-            try:
-                product = VinylRecord.objects.get(slug=slug)
-                self.product_type = 'vinyl'
-                return product
-            except VinylRecord.DoesNotExist:
-                raise Http404("Продукт не знайдено")
+        queryset = Product.objects.all()
+        self.filterset = ProductFilter(self.request.GET, queryset=queryset)
+        return self.filterset.qs
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        context['product_type'] = self.product_type
-        context['is_vinyl_record'] = self.product_type == 'vinyl'
+        context['filter'] = self.filterset
+        return context
+
+class ProductDetailView(DetailView):
+    template_name = 'shop/product_detail.html'
+    model = Product
+    context_object_name = 'product'
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['product_type'] = 'vinyl' if self.object.category.slug == 'vinyl-records' else 'general'
         return context

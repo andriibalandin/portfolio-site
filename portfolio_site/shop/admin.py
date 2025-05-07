@@ -1,5 +1,5 @@
 from django.contrib import admin
-from .models import Category, GeneralProduct, VinylRecord, Genre, Artist, Manufacturer
+from .models import Category, Product, Genre, Artist, Manufacturer
 
 
 @admin.register(Category)
@@ -26,13 +26,7 @@ class ManufacturerAdmin(admin.ModelAdmin):
     prepopulated_fields = {'slug': ('name',)}
 
 
-@admin.register(GeneralProduct)
-class GeneralProductAdmin(admin.ModelAdmin):
-    list_display = ['name', 'price', 'discount', 'is_new']
-    prepopulated_fields = {'slug': ('name',)}
-
-
-@admin.register(VinylRecord)
-class VinylRecordAdmin(admin.ModelAdmin):
+@admin.register(Product)
+class ProductAdmin(admin.ModelAdmin):
     list_display = ['name', 'price', 'discount', 'is_new', 'release_year']
     prepopulated_fields = {'slug': ('name',)}

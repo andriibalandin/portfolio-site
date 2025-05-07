@@ -1,17 +1,19 @@
 {% extends 'shop/base.html' %}
 {% block content %}
+<div class="container">
     <h1>{{ product.name }}</h1>
     {% if product.image %}
-        <img src="{{ product.image.url }}" alt="{{ product.title }}">
+        <img src="{{ product.image.url }}" alt="{{ product.name }}" class="img-fluid">
     {% else %}
         <p>Зображення відсутнє</p>
     {% endif %}
     <p>{{ product.description }}</p>
     <p>Ціна: {{ product.get_discounted_price }} грн</p>
-    {% if product.is_vinyl_record %}
+    {% if product.category.slug == 'vinyl-records' %}
         <p>Виконавець: {{ product.artist }}</p>
         <p>Рік випуску: {{ product.release_year }}</p>
         <p>Жанр: {{ product.genre.all|join:", " }}</p>
     {% endif %}
-    <a href="{% url 'cart:add_to_cart' product_type=product_type product_id=product.id %}">Додати в кошик</a>
+    <a href="{% url 'cart:add_to_cart' product_type=product_type product_id=product.id %}" class="btn btn-primary">Додати в кошик</a>
+</div>
 {% endblock %}
