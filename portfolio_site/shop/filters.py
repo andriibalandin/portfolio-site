@@ -14,10 +14,15 @@ class ProductFilter(django_filters.FilterSet):
         label='Категорія',
         empty_label='Усі категорії'
     )
-    genre = django_filters.ModelChoiceFilter(
+    genre = django_filters.ModelMultipleChoiceFilter(
         queryset=Genre.objects.all(),
         label='Жанр',
-        empty_label='Усі жанри'
+        conjoined=False,
+        widget=forms.SelectMultiple(attrs={
+            'class': 'form-select select2',
+            'data-allow-clear': 'true',
+            'data-placeholder': 'Пошук жанрів'
+        })
     )
     artist = django_filters.ModelChoiceFilter(
         queryset=Artist.objects.all(),
@@ -35,9 +40,7 @@ class ProductFilter(django_filters.FilterSet):
         label='Макс. ціна'
     )
     has_discount = django_filters.BooleanFilter(
-        field_name='discount',
-        lookup_expr='isnull',
-        exclude=True,
+        method='filter_has_discount',
         label='Тільки зі знижкою',
         widget=forms.CheckboxInput
     )
@@ -46,10 +49,15 @@ class ProductFilter(django_filters.FilterSet):
         lookup_expr='gte',
         label='Мін. рейтинг'
     )
-    is_new = django_filters.BooleanFilter(
+    is_new = django_filters.ChoiceFilter(
         field_name='is_new',
-        label='Тільки новинки',
-        widget=forms.CheckboxInput
+        label='Новинки',
+        choices=[
+            ('true', 'Тільки новинки'),
+            ('false', 'Без новинок'),
+        ],
+        method='filter_is_new',
+        empty_label='Всі товари'
     )
     sort_by = django_filters.ChoiceFilter(
         label='Сортувати',
@@ -79,12 +87,32 @@ class ProductFilter(django_filters.FilterSet):
             return queryset.order_by('rating')
         return queryset
 
+    def filter_has_discount(self, queryset, name, value):
+        if value:
+            return queryset.filter(discount__isnull=False, discount__gt=0)
+        return queryset
+    
+    def filter_is_new(self, queryset, name, value):
+        print(f"Filtering is_new with value: {value}, raw value: {self.data.get('is_new')}")
+        if value == 'true':
+            return queryset.filter(is_new=True)
+        elif value == 'false':
+            return queryset.filter(is_new=False)
+        return queryset.filter(is_new=True)
+
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
         for field_name, field in self.form.fields.items():
             if isinstance(field.widget, (forms.TextInput, forms.NumberInput)):
                 field.widget.attrs.update({'class': 'form-control', 'placeholder': field.label})
             elif isinstance(field.widget, forms.Select):
-                field.widget.attrs.update({'class': 'form-select select2'})
+                if field_name in ['genre', 'artist', 'category']: 
+                    field.widget.attrs.update({
+                        'class': 'form-select select2',
+                        'data-allow-clear': 'true',
+                        'data-placeholder': field.label
+                    })
+                else:
+                    field.widget.attrs.update({'class': 'form-select'})  
             elif isinstance(field.widget, forms.CheckboxInput):
                 field.widget.attrs.update({'class': 'form-check-input'})

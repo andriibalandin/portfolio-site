@@ -6,16 +6,18 @@ from .models import Category, Product, Genre
 from .filters import ProductFilter
 from .forms import ReviewForm
 
+
 class HomeView(TemplateView):
     template_name = 'shop/index.html'
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        context['new_products'] = Product.objects.filter(is_new=True, category__slug='other')[:3]
+        context['new_products'] = Product.objects.filter(is_new=True).exclude(category__slug='vinyl-records')[:3]
         context['new_vinyl'] = Product.objects.filter(is_new=True, category__slug='vinyl-records')[:3]
-        context['discounted_products'] = Product.objects.filter(discount__isnull=False, category__slug='other')[:3]
+        context['discounted_products'] = Product.objects.filter(discount__isnull=False).exclude(category__slug='vinyl-records')[:3]
         context['discounted_vinyl'] = Product.objects.filter(discount__isnull=False, category__slug='vinyl-records')[:3]
         return context
+
 
 class ProductListView(ListView):
     template_name = 'shop/product_list.html'
@@ -31,6 +33,7 @@ class ProductListView(ListView):
         context = super().get_context_data(**kwargs)
         context['filter'] = self.filterset
         return context
+
 
 class ProductDetailView(DetailView):
     template_name = 'shop/product_detail.html'

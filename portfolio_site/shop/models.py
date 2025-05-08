@@ -44,7 +44,7 @@ class Product(models.Model):
     price = models.DecimalField(max_digits=10, decimal_places=2)
     discount = models.DecimalField(max_digits=5, decimal_places=2, null=True, blank=True)
     rating = models.FloatField(default=0.0)
-    is_new = models.BooleanField(default=False)
+    is_new = models.BooleanField(default=False, null=True, blank=True)
     image = models.ImageField(upload_to='products/', blank=True, null=True)
     manufacturer = models.ForeignKey(Manufacturer, on_delete=models.CASCADE)
     artist = models.ForeignKey(Artist, on_delete=models.CASCADE, null=True, blank=True)
