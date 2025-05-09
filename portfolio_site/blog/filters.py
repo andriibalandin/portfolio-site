@@ -9,8 +9,13 @@ class PostFilter(django_filters.FilterSet):
     category = django_filters.ModelChoiceFilter(queryset=Category.objects.all(), label='Категорія', empty_label='Усі категорії')
     tags = django_filters.ModelMultipleChoiceFilter(
         queryset=Tag.objects.all(),
-        widget=forms.CheckboxSelectMultiple,
-        label='Теги'
+        widget=forms.SelectMultiple(attrs={
+            'class': 'form-select select2',
+            'data-allow-clear': 'true',
+            'data-placeholder': 'Пошук тегів'
+        }),
+        label='Теги',
+        conjoined=False
     )
     author = django_filters.ModelChoiceFilter(queryset=User.objects.all(), label='Автор', empty_label='Усі автори')
     followed_authors = django_filters.BooleanFilter(
@@ -67,3 +72,20 @@ class PostFilter(django_filters.FilterSet):
         elif value == 'date_asc':
             return queryset.order_by('created_at')
         return queryset
+    
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        for field_name, field in self.form.fields.items():
+            if isinstance(field.widget, (forms.TextInput, forms.NumberInput)):
+                field.widget.attrs.update({'class': 'form-control', 'placeholder': field.label})
+            elif isinstance(field.widget, forms.Select):
+                if field_name in ['category', 'author', 'tags']: 
+                    field.widget.attrs.update({
+                        'class': 'form-select select2',
+                        'data-allow-clear': 'true',
+                        'data-placeholder': field.label
+                    })
+                else:
+                    field.widget.attrs.update({'class': 'form-select'})  
+            elif isinstance(field.widget, forms.CheckboxInput):
+                field.widget.attrs.update({'class': 'form-check-input'})

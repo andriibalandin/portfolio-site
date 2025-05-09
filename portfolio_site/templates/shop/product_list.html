@@ -23,6 +23,10 @@
                     {{ filter.form.artist }}
                 </div>
                 <div class="mb-3">
+                    <label for="{{ filter.form.manufacturer.id_for_label }}" class="form-label">{{ filter.form.manufacturer.label }}</label>
+                    {{ filter.form.manufacturer }}
+                </div>
+                <div class="mb-3">
                     <label for="{{ filter.form.price_min.id_for_label }}" class="form-label">{{ filter.form.price_min.label }}</label>
                     {{ filter.form.price_min }}
                 </div>
@@ -51,17 +55,23 @@
             </form>
         </div>
         <div class="col-md-9">
-            {% for product in products %}
+            {% for product in page_obj %}
                 <div class="card mb-3">
                     <div class="card-body">
                         <h5 class="card-title"><a href="{{ product.get_absolute_url }}">{{ product.name }}</a></h5>
                         <p class="card-text">Ціна: {{ product.get_discounted_price }} грн</p>
                         {% if product.category.slug == 'vinyl-records' %}
-                            <p class="card-text">Виконавець: {{ product.artist }}</p>
-                            <p class="card-text">Жанр: {{ product.genre.all|join:", " }}</p>
+                            <p class="card-text">Виконавець: <a href="{% url 'shop:product_list' %}?artist={{ product.artist.id }}">{{ product.artist }}</a></p>
+                            <p class="card-text">Жанр: 
+                                {% for genre in product.genre.all %}
+                                    <a href="{% url 'shop:product_list' %}?genre={{ genre.id }}">{{ genre.name }}</a>{% if not forloop.last %}, {% endif %}
+                                {% empty %}
+                                    Немає
+                                {% endfor %}
+                            </p>
                             <p class="card-text">Рік випуску: {{ product.release_year }}</p>
                         {% endif %}
-                        <p class="card-text">Категорія: {{ product.category.name }}</p>
+                        <p class="card-text">Категорія: <a href="{% url 'shop:product_list' %}?category={{ product.category.id }}">{{ product.category.name }}</a></p>
                     </div>
                 </div>
             {% empty %}
@@ -73,7 +83,7 @@
                     <ul class="pagination">
                         {% if page_obj.has_previous %}
                             <li class="page-item">
-                                <a class="page-link" href="?page={{ page_obj.previous_page_number }}{% for key, value in request.GET.items %}{% if key != 'page' %}&{{ key }}={{ value }}{% endif %}{% endfor %}">Попередня</a>
+                                <a class="page-link" href="?page={{ page_obj.previous_page_number }}{% if request.GET.urlencode|slice:"5:" %}&{{ request.GET.urlencode|slice:"5:" }}{% endif %}">Попередня</a>
                             </li>
                         {% else %}
                             <li class="page-item disabled">
@@ -88,14 +98,14 @@
                                 </li>
                             {% elif num > page_obj.number|add:'-3' and num < page_obj.number|add:'3' %}
                                 <li class="page-item">
-                                    <a class="page-link" href="?page={{ num }}{% for key, value in request.GET.items %}{% if key != 'page' %}&{{ key }}={{ value }}{% endif %}{% endfor %}">{{ num }}</a>
+                                    <a class="page-link" href="?page={{ num }}{% if request.GET.urlencode|slice:"5:" %}&{{ request.GET.urlencode|slice:"5:" }}{% endif %}">{{ num }}</a>
                                 </li>
                             {% endif %}
                         {% endfor %}
 
                         {% if page_obj.has_next %}
                             <li class="page-item">
-                                <a class="page-link" href="?page={{ page_obj.next_page_number }}{% for key, value in request.GET.items %}{% if key != 'page' %}&{{ key }}={{ value }}{% endif %}{% endfor %}">Наступна</a>
+                                <a class="page-link" href="?page={{ page_obj.next_page_number }}{% if request.GET.urlencode|slice:"5:" %}&{{ request.GET.urlencode|slice:"5:" }}{% endif %}">Наступна</a>
                             </li>
                         {% else %}
                             <li class="page-item disabled">

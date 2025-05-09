@@ -1,6 +1,6 @@
 import django_filters
 from django import forms
-from .models import Product, Category, Genre, Artist
+from .models import Product, Category, Genre, Artist, Manufacturer
 
 class ProductFilter(django_filters.FilterSet):
     name = django_filters.CharFilter(
@@ -28,6 +28,11 @@ class ProductFilter(django_filters.FilterSet):
         queryset=Artist.objects.all(),
         label='Виконавець',
         empty_label='Усі виконавці'
+    )
+    manufacturer = django_filters.ModelChoiceFilter(
+        queryset=Manufacturer.objects.all(),
+        label='Виробник',
+        empty_label='Усі виробники'
     )
     price_min = django_filters.NumberFilter(
         field_name='price',
@@ -73,7 +78,7 @@ class ProductFilter(django_filters.FilterSet):
 
     class Meta:
         model = Product
-        fields = ['name', 'category', 'genre', 'artist', 'price_min', 'price_max', 'has_discount', 'rating_min', 'is_new', 'sort_by']
+        fields = ['name', 'category', 'genre', 'artist', 'price_min', 'price_max', 'has_discount', 'rating_min', 'is_new', 'sort_by', 'manufacturer']
 
     def filter_sort_by(self, queryset, name, value):
         print(f"Sort by: {value}")
@@ -106,7 +111,7 @@ class ProductFilter(django_filters.FilterSet):
             if isinstance(field.widget, (forms.TextInput, forms.NumberInput)):
                 field.widget.attrs.update({'class': 'form-control', 'placeholder': field.label})
             elif isinstance(field.widget, forms.Select):
-                if field_name in ['genre', 'artist', 'category']: 
+                if field_name in ['genre', 'artist', 'category', 'manufacturer']: 
                     field.widget.attrs.update({
                         'class': 'form-select select2',
                         'data-allow-clear': 'true',

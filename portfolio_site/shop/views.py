@@ -2,9 +2,10 @@ from django.http import Http404
 from django.shortcuts import render, redirect
 from django.views.generic import TemplateView, ListView, DetailView
 from django.contrib.auth.mixins import LoginRequiredMixin
-from .models import Category, Product, Genre
+from .models import Category, Product, Review
 from .filters import ProductFilter
 from .forms import ReviewForm
+from django.core.paginator import Paginator
 
 
 class HomeView(TemplateView):
@@ -42,14 +43,32 @@ class ProductDetailView(DetailView):
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        context['review_form'] = ReviewForm()
+        reviews = self.get_object().reviews.all()
+        paginator = Paginator(reviews, 5) 
+        page_number = self.request.GET.get('page')
+        page_obj = paginator.get_page(page_number)
+        context['page_obj'] = page_obj
+
+        if self.request.user.is_authenticated:
+            existing_review = Review.objects.filter(product=self.get_object(), user=self.request.user).first()
+            if existing_review:
+                context['review_form'] = ReviewForm(instance=existing_review)
+                context['existing_review'] = existing_review
+            else:
+                context['review_form'] = ReviewForm()
         return context
 
     def post(self, request, *args, **kwargs):
         product = self.get_object()
         if not request.user.is_authenticated:
-            return redirect('login')
-        form = ReviewForm(request.POST)
+            return redirect('users:login')
+
+        existing_review = Review.objects.filter(product=product, user=request.user).first()
+
+        if existing_review:
+            form = ReviewForm(request.POST, instance=existing_review)
+        else:
+            form = ReviewForm(request.POST)
         if form.is_valid():
             review = form.save(commit=False)
             review.product = product
@@ -57,6 +76,7 @@ class ProductDetailView(DetailView):
             review.save()
             product.update_rating()
             return redirect(product.get_absolute_url())
+
         context = self.get_context_data()
         context['review_form'] = form
         return self.render_to_response(context)
