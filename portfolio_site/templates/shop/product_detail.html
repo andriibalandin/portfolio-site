@@ -24,7 +24,7 @@
                 <div class="card-body">
                     <p class="card-text">{{ review.comment }}</p>
                     <p class="card-text">Оцінка: {{ review.rating }}/5</p>
-                    <p class="card-text text-muted">Автор: {{ review.user.username }} | {{ review.created_at|date:"d.m.Y H:i" }}</p>
+                    <p class="card-text text-muted">Автор: <a href="{% url 'users:profile' %}?user_id={{ review.user.id }}">{{ review.user.username }}</a> | {{ review.created_at|date:"d.m.Y H:i" }}</p>
                 </div>
             </div>
         {% endfor %}

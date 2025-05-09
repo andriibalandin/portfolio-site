@@ -4,10 +4,12 @@ from django.urls import reverse, reverse_lazy
 from django.views import View
 from django.views.generic import DetailView, UpdateView, DeleteView, CreateView, ListView
 from django.contrib.auth.mixins import LoginRequiredMixin
-from .models import Post
-from django.utils.text import slugify
+from .models import Post, Comment
 from .filters import PostFilter
+from .forms import CommentForm
+from django.utils.text import slugify
 from users.models import Subscription
+from django.core.paginator import Paginator
 
 
 class PostListView(ListView):
@@ -36,7 +38,7 @@ class PostCreateView(LoginRequiredMixin, CreateView):
 
     def dispatch(self, request, *args, **kwargs):
         if not Subscription.objects.filter(user=request.user, is_active=True).exists():
-            return redirect('users:subscribe')  # Redirect to subscription page
+            return redirect('users:subscribe')  
         return super().dispatch(request, *args, **kwargs)
 
     def form_valid(self, form):
@@ -54,8 +56,31 @@ class PostDetailView(DetailView):
         context = super().get_context_data(**kwargs)
         if self.request.user.is_authenticated:
             context['is_liked'] = self.request.user in self.object.likes.all()
+            context['comment_form'] = CommentForm()
         context['like_count'] = self.object.likes.count()
+        comments = self.object.comments.all()
+        paginator = Paginator(comments, 5)  
+        page_number = self.request.GET.get('page')
+        page_obj = paginator.get_page(page_number)
+        context['page_obj'] = page_obj
         return context
+    
+    def post(self, request, *args, **kwargs):
+        post = self.get_object()
+        if not request.user.is_authenticated:
+            return redirect('users:login')
+
+        form = CommentForm(request.POST)
+        if form.is_valid():
+            comment = form.save(commit=False)
+            comment.post = post
+            comment.user = request.user
+            comment.save()
+            return redirect(post.get_absolute_url())
+
+        context = self.get_context_data()
+        context['comment_form'] = form
+        return self.render_to_response(context)
 
 
 class LikePostView(LoginRequiredMixin, View):
