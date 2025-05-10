@@ -8,7 +8,11 @@
         <p>Зображення відсутнє</p>
     {% endif %}
     <p>{{ product.description }}</p>
-    <p>Ціна: {{ product.get_discounted_price }} грн</p>
+    {% if product.get_discounted_price == product.price %}
+        <p class="card-text">Ціна: {{ product.get_discounted_price }} грн</p>
+    {% else %}
+        <p class="card-text">Ціна: <del>{{ product.price }}</del> <b style="color: red;">{{ product.get_discounted_price }} грн (ЗНИЖКА -{{ product.discount }}%)</b></p>
+    {% endif %}
     <p>Середній рейтинг: {{ product.rating }}</p>
     {% if product.category.slug == 'vinyl-records' %}
         <p>Виконавець: {{ product.artist }}</p>

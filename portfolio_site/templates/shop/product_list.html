@@ -59,7 +59,11 @@
                 <div class="card mb-3">
                     <div class="card-body">
                         <h5 class="card-title"><a href="{{ product.get_absolute_url }}">{{ product.name }}</a></h5>
-                        <p class="card-text">Ціна: {{ product.get_discounted_price }} грн</p>
+                        {% if product.get_discounted_price == product.price %}
+                            <p class="card-text">Ціна: {{ product.get_discounted_price }} грн</p>
+                        {% else %}
+                            <p class="card-text">Ціна: <del>{{ product.price }}</del> <b style="color: red;">{{ product.get_discounted_price }} грн (ЗНИЖКА -{{ product.discount }}%)</b></p>
+                        {% endif %}
                         {% if product.category.slug == 'vinyl-records' %}
                             <p class="card-text">Виконавець: <a href="{% url 'shop:product_list' %}?artist={{ product.artist.id }}">{{ product.artist }}</a></p>
                             <p class="card-text">Жанр: 

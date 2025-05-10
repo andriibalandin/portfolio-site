@@ -15,7 +15,7 @@
             <tbody>
                 {% for item in cart.cartitem_set.all %}
                     <tr>
-                        <td>{{ item.product.name }}</td>
+                        <td><a href="{% url 'shop:product_detail' item.product.slug %}">{{ item.product.name }}</a></td>
                         <td>
                             <form action="{% url 'cart:update_cart_item' item.id %}" method="post">
                                 {% csrf_token %}
