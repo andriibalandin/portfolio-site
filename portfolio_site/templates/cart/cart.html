@@ -30,9 +30,10 @@
                         </td>
                     </tr>
                 {% endfor %}
-            </tbody>
+                </tbody>
         </table>
         <p><strong>Загальна сума: {{ cart.get_total }} грн</strong></p>
+        <a href="{% url 'orders:order_create' %}" class="btn">Оформити замовлення</a>
     {% else %}
         <p>Кошик порожній</p>
     {% endif %}

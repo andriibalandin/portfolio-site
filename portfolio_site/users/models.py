@@ -16,9 +16,7 @@ class UserProfile(models.Model):
 
 class TrackedProduct(models.Model):
     user_profile = models.ForeignKey(UserProfile, on_delete=models.CASCADE, related_name='tracked_products')
-    content_type = models.ForeignKey(ContentType, on_delete=models.CASCADE, limit_choices_to={
-        'model__in': ['generalproduct', 'vinylrecord']
-    })
+    content_type = models.ForeignKey(ContentType, on_delete=models.CASCADE)
     object_id = models.PositiveIntegerField()
     product = GenericForeignKey('content_type', 'object_id')
 
@@ -34,4 +32,3 @@ class Subscription(models.Model):
 
     def __str__(self):
         return f"{self.user.username} - {'Active' if self.is_active else 'Inactive'}"
-

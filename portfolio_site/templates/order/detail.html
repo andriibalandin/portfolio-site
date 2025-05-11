@@ -1,0 +1,32 @@
+{% extends 'shop/base.html' %}
+{% block content %}
+    <h1>Деталі замовлення #{{ order.id }}</h1>
+    <p><strong>Дата:</strong> {{ order.created_at }}</p>
+    <p><strong>Ім'я:</strong> {{ order.first_name }} {{ order.last_name }}</p>
+    <p><strong>Email:</strong> {{ order.email }}</p>
+    <p><strong>Адреса:</strong> {{ order.address }}, {{ order.city }}, {{ order.postal_code }}</p>
+    <p><strong>Статус:</strong> {% if order.paid %}Оплачено{% else %}Очікує оплати{% endif %}</p>
+
+    <h2>Товари</h2>
+    <table>
+        <thead>
+            <tr>
+                <th>Товар</th>
+                <th>Кількість</th>
+                <th>Ціна</th>
+                <th>Всього</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for item in order.orderitem_set.all %}
+                <tr>
+                    <td>{{ item.product.name }}</td>
+                    <td>{{ item.quantity }}</td>
+                    <td>{{ item.price }} грн</td>
+                    <td>{{ item.get_cost }} грн</td>
+                </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+    <p><strong>Загальна сума: {{ order.get_total_cost }} грн</strong></p>
+{% endblock %}

@@ -1,0 +1,7 @@
+{% extends 'shop/base.html' %}
+{% block content %}
+    <h1>Замовлення створено</h1>
+    <p>Дякуємо за ваше замовлення! Номер замовлення: {{ order.id }}</p>
+    <p>Ви отримаєте підтвердження на email: {{ order.email }}</p>
+    <a href="{% url 'orders:order_detail' order.id %}">Переглянути деталі</a>
+{% endblock %}

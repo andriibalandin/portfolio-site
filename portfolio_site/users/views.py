@@ -1,7 +1,7 @@
 from django.http import HttpResponseRedirect
 from django.shortcuts import get_object_or_404
 from django.views.generic import DetailView, View
-from django.views.generic.edit import FormView
+from django.views.generic.edit import FormView, UpdateView
 from django.contrib.auth.views import LoginView
 from django.contrib.auth.forms import UserCreationForm
 from django.contrib.auth.mixins import LoginRequiredMixin
@@ -9,6 +9,7 @@ from django.contrib.auth import login
 from django.urls import reverse, reverse_lazy
 from django.contrib.auth.models import User
 from .models import Subscription, UserProfile
+from .forms import ProfileEditForm
 
 
 class CustomLoginView(LoginView):
@@ -58,3 +59,19 @@ class UnfollowAuthorView(LoginRequiredMixin, View):
         profile_to_unfollow = get_object_or_404(UserProfile, user__id=user_id)
         request.user.userprofile.followed_authors.remove(profile_to_unfollow)
         return HttpResponseRedirect(reverse('users:profile') + f'?user_id={user_id}')
+    
+
+class EditProfileView(LoginRequiredMixin, UpdateView):
+    model = UserProfile
+    form_class = ProfileEditForm
+    template_name = 'users/edit_profile.html'
+    success_url = reverse_lazy('users:profile')
+
+    def get_object(self):
+        return self.request.user.userprofile
+
+    def get_form_kwargs(self):
+        kwargs = super().get_form_kwargs()
+        kwargs['user'] = self.request.user
+        return kwargs
+    

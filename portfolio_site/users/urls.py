@@ -1,5 +1,5 @@
 from django.urls import path
-from .views import CustomLoginView, ProfileView, RegisterView, FollowAuthorView, UnfollowAuthorView
+from .views import CustomLoginView, ProfileView, RegisterView, FollowAuthorView, UnfollowAuthorView, EditProfileView
 from django.contrib.auth.views import LogoutView
 
 app_name = 'users'
@@ -11,4 +11,5 @@ urlpatterns = [
     path('subscribe/', ProfileView.as_view(), name='subscribe'),
     path('follow/<int:user_id>/', FollowAuthorView.as_view(), name='follow_author'),
     path('unfollow/<int:user_id>/', UnfollowAuthorView.as_view(), name='unfollow_author'),
+    path('profile/edit/', EditProfileView.as_view(), name='edit_profile'),
 ]

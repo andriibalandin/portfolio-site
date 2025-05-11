@@ -14,6 +14,9 @@
     <p>Аватар відсутній</p>
   {% endif %}
   <p>Підписка: {{ user_subscription.is_active|yesno:"Активна,Неактивна" }}</p>
+  {% if request.user == user %}
+    <a href="{% url 'users:edit_profile' %}">Редагувати профіль</a>
+  {% endif %}
   <p><a href="{% url 'blog:posts' %}?only_followed=True">Пости відстежуваних авторів</a></p>
   <h3>Відстежувані продукти</h3>
   {% for tracked in tracked_products %}

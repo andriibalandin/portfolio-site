@@ -1,0 +1,33 @@
+{% extends 'shop/base.html' %}
+{% block content %}
+    <h1>Оформлення замовлення</h1>
+    <h2>Ваш кошик</h2>
+    <table>
+        <thead>
+            <tr>
+                <th>Товар</th>
+                <th>Кількість</th>
+                <th>Ціна</th>
+                <th>Всього</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for item in cart.cartitem_set.all %}
+                <tr>
+                    <td>{{ item.product.name }}</td>
+                    <td>{{ item.quantity }}</td>
+                    <td>{{ item.product.get_discounted_price }} грн</td>
+                    <td>{{ item.get_total_price }} грн</td>
+                </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+    <p><strong>Загальна сума: {{ cart.get_total }} грн</strong></p>
+
+    <h2>Ваші дані</h2>
+    <form method="post">
+        {% csrf_token %}
+        {{ form.as_p }}
+        <button type="submit">Підтвердити замовлення</button>
+    </form>
+{% endblock %}
