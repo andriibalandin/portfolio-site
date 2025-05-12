@@ -136,9 +136,19 @@ LOGOUT_REDIRECT_URL = '/'
 SESSION_ENGINE = 'django.contrib.sessions.backends.db'
 SESSION_COOKIE_AGE = 1209600
 
+#mail
 EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
 EMAIL_HOST = 'smtp.gmail.com'
 EMAIL_PORT = 587
 EMAIL_USE_TLS = True
-EMAIL_HOST_USER = 'justanothermailidhwhoiam@gmail.com'  
-EMAIL_HOST_PASSWORD = 'woho pawt dgti wzpt' 
+EMAIL_HOST_USER = 'justanothermailidhwhoiam@gmail.com'  #пошта з якої відправляються листи
+EMAIL_HOST_PASSWORD = 'woho pawt dgti wzpt'  #пароль додатку з пошти
+
+
+#stripe
+STRIPE_PUBLISHABLE_KEY = ''  #тестовий publishable key
+STRIPE_SECRET_KEY = ''      #тестовий secret key
+STRIPE_PRICE_ID_MONTHLY = 'price_1RNsHWPMBzLVC7yQGGJJGkls'   #ID ціни для місячної підписки
+STRIPE_PRICE_ID_YEARLY = 'price_1RNsIMPMBzLVC7yQUI8RwU0R'    #ID ціни для річної підписки
+SITE_DOMAIN = 'http://127.0.0.1:8000'   #домен цього сайту
+

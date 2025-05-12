@@ -1,0 +1,13 @@
+{% extends 'shop/base.html' %}
+{% block content %}
+    <h1>Оформлення підписки</h1>
+    {% if form.errors %}
+        <p style="color: red;">Помилка: {{ form.non_field_errors }}</p>
+    {% endif %}
+    <form method="post">
+        {% csrf_token %}
+        {{ form.as_p }}
+        <button type="submit" class="button">Оформити підписку</button>
+    </form>
+    <a href="{% url 'users:profile' %}">Назад до профілю</a>
+{% endblock %}

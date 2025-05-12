@@ -25,10 +25,16 @@ class TrackedProduct(models.Model):
 
 
 class Subscription(models.Model):
+    PLAN_CHOICES = (
+        ('monthly', 'Monthly'),
+        ('yearly', 'Yearly'),
+    )
     user = models.ForeignKey(User, on_delete=models.CASCADE)
+    plan = models.CharField(max_length=20, choices=PLAN_CHOICES, default='monthly')
     start_date = models.DateTimeField(auto_now_add=True)
     end_date = models.DateTimeField()
     is_active = models.BooleanField(default=True)
+    stripe_subscription_id = models.CharField(max_length=100, blank=True, null=True)
 
     def __str__(self):
-        return f"{self.user.username} - {'Active' if self.is_active else 'Inactive'}"
+        return f"{self.user.username} - {self.plan} - {'Active' if self.is_active else 'Inactive'}"

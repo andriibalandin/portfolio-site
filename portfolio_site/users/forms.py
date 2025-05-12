@@ -1,5 +1,5 @@
 from django import forms
-from .models import UserProfile
+from .models import UserProfile, Subscription
 from django.contrib.auth.models import User
 
 
@@ -23,4 +23,12 @@ class ProfileEditForm(forms.ModelForm):
         if commit:
             user.save()
         return profile
-    
+
+
+class SubscriptionForm(forms.ModelForm):
+    class Meta:
+        model = Subscription
+        fields = ['plan']
+        widgets = {
+            'plan': forms.RadioSelect
+        }
