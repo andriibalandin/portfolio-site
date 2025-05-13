@@ -1,5 +1,6 @@
 from django.db import models
 from django.contrib.auth.models import User
+from django.forms import ValidationError
 from shop.models import Product
 from django.contrib.contenttypes.fields import GenericForeignKey
 from django.contrib.contenttypes.models import ContentType
@@ -40,4 +41,16 @@ class OrderItem(models.Model):
 
     def get_cost(self):
         return self.price * self.quantity
+    
+    def clean(self):
+        if not self.product:
+            raise ValidationError("Товар не існує.")
+        if not self.product.is_available or self.product.quantity == 0:
+            raise ValidationError(f"Товар {self.product.name} не в наявності.")
+        if self.quantity > self.product.quantity:
+            raise ValidationError(f"Недостатньо товару {self.product.name}. В наявності: {self.product.quantity} шт.")
+
+    def save(self, *args, **kwargs):
+        self.clean()
+        super().save(*args, **kwargs)
     

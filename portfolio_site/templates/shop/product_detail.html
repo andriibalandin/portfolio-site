@@ -13,13 +13,24 @@
     {% else %}
         <p class="card-text">Ціна: <del>{{ product.price }}</del> <b style="color: red;">{{ product.get_discounted_price }} грн (ЗНИЖКА -{{ product.discount }}%)</b></p>
     {% endif %}
+    <p>Наявність: {% if product.is_available and product.quantity > 0 %}В наявності ({{ product.quantity }} шт.){% else %}Немає в наявності{% endif %}</p>
     <p>Середній рейтинг: {{ product.rating }}</p>
     {% if product.category.slug == 'vinyl-records' %}
         <p>Виконавець: {{ product.artist }}</p>
         <p>Рік випуску: {{ product.release_year }}</p>
         <p>Жанр: {{ product.genre.all|join:", " }}</p>
     {% endif %}
-    <a href="{% url 'cart:add_to_cart' product_id=product.id %}" class="btn btn-primary mb-3">Додати в кошик</a>
+    {% if user.is_authenticated %}
+        {% if is_tracked %}
+            <a href="{% url 'shop:track_product' product.slug %}" class="button">Припинити відстежування</a>
+        {% else %}
+            <a href="{% url 'shop:track_product' product.slug %}" class="button">Відстежувати</a>
+        {% endif %}
+    {% else %}
+        <a href="{% url 'users:login' %}" class="button">Увійдіть, щоб відстежувати</a>
+    {% endif %}
+
+    <a href="{% url 'cart:add_to_cart' product_id=product.id %}" class="button">Додати в кошик</a>
     <hr>
     <h3>Відгуки</h3>
     {% if product.reviews.exists %}

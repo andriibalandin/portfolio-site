@@ -15,7 +15,7 @@
             {% for item in cart.cartitem_set.all %}
                 <tr>
                     <td>{{ item.product.name }}</td>
-                    <td>{{ item.quantity }}</td>
+                    <td>{{ item.quantity }} (В наявності: {{ item.product.quantity }} шт.)</td>
                     <td>{{ item.product.get_discounted_price }} грн</td>
                     <td>{{ item.get_total_price }} грн</td>
                 </tr>

@@ -28,5 +28,5 @@ class ManufacturerAdmin(admin.ModelAdmin):
 
 @admin.register(Product)
 class ProductAdmin(admin.ModelAdmin):
-    list_display = ['name', 'price', 'discount', 'is_new', 'release_year']
+    list_display = ['name', 'price', 'discount', 'is_new', 'release_year', 'is_available', 'quantity']
     prepopulated_fields = {'slug': ('name',)}

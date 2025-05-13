@@ -29,6 +29,11 @@ class ProductFilter(django_filters.FilterSet):
         label='Виконавець',
         empty_label='Усі виконавці'
     )
+    is_available = django_filters.BooleanFilter(
+        method='filter_is_available',
+        label='Тільки в наявності',
+        widget=forms.CheckboxInput
+        )
     manufacturer = django_filters.ModelChoiceFilter(
         queryset=Manufacturer.objects.all(),
         label='Виробник',
@@ -78,7 +83,20 @@ class ProductFilter(django_filters.FilterSet):
 
     class Meta:
         model = Product
-        fields = ['name', 'category', 'genre', 'artist', 'price_min', 'price_max', 'has_discount', 'rating_min', 'is_new', 'sort_by', 'manufacturer']
+        fields = [
+            'name',
+            'category', 
+            'genre', 
+            'artist', 
+            'price_min', 
+            'price_max', 
+            'has_discount', 
+            'rating_min', 
+            'is_new', 
+            'sort_by', 
+            'manufacturer', 
+            'is_available'
+        ]
 
     def filter_sort_by(self, queryset, name, value):
         print(f"Sort by: {value}")
@@ -95,6 +113,11 @@ class ProductFilter(django_filters.FilterSet):
     def filter_has_discount(self, queryset, name, value):
         if value:
             return queryset.filter(discount__isnull=False, discount__gt=0)
+        return queryset
+    
+    def filter_is_available(self, queryset, name, value):
+        if value:
+            return queryset.filter(is_available=True)
         return queryset
     
     def filter_is_new(self, queryset, name, value):

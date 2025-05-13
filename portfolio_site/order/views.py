@@ -5,6 +5,7 @@ from .models import Order, OrderItem
 from .forms import OrderCreateForm
 from cart.models import Cart
 from django.contrib.contenttypes.models import ContentType
+from django.db import transaction
 
 
 class OrderCreateView(View):
@@ -40,46 +41,55 @@ class OrderCreateView(View):
         if not cart or not cart.cartitem_set.exists():
             return redirect('cart:cart')
 
+        for item in cart.cartitem_set.all():
+            if not item.product.is_available or item.product.quantity == 0:
+                return redirect('cart:cart')
+            if item.quantity > item.product.quantity:
+                return redirect('cart:cart')
+
         form = OrderCreateForm(request.POST)
         if form.is_valid():
-            order = form.save(commit=False)
-            if request.user.is_authenticated:
-                order.user = request.user
-            order.save()
+            with transaction.atomic():
+                order = form.save(commit=False)
+                if request.user.is_authenticated:
+                    order.user = request.user
+                order.save()
 
-            content_type = ContentType.objects.get_for_model(cart.cartitem_set.first().product)
-            for item in cart.cartitem_set.all():
-                OrderItem.objects.create(
-                    order=order,
-                    content_type=content_type,
-                    object_id=item.object_id,
-                    product=item.product,
-                    price=item.product.get_discounted_price(),
-                    quantity=item.quantity
+                content_type = ContentType.objects.get_for_model(cart.cartitem_set.first().product)
+                for item in cart.cartitem_set.all():
+                    OrderItem.objects.create(
+                        order=order,
+                        content_type=content_type,
+                        object_id=item.object_id,
+                        product=item.product,
+                        price=item.product.get_discounted_price(),
+                        quantity=item.quantity
+                    )
+                    item.product.quantity -= item.quantity
+                    item.product.save()
+
+                subject = f'Підтвердження замовлення #{order.id}'
+                message = (
+                    f'Дякуємо за ваше замовлення!\n\n'
+                    f'Номер замовлення: {order.id}\n'
+                    f'Загальна сума: {order.get_total_cost()} грн\n'
+                    f'Адреса доставки: {order.address}, {order.city}, {order.postal_code}\n\n'
+                    f'Ви можете переглянути деталі за посиланням: '
+                    f'http://127.0.0.1:8000/order/detail/{order.id}/'
+                )
+                send_mail(
+                    subject,
+                    message,
+                    'justanothermailidhwhoiam@gmail.com',
+                    [order.email],
+                    fail_silently=False,
                 )
 
-            subject = f'Підтвердження замовлення #{order.id}'
-            message = (
-                f'Дякуємо за ваше замовлення!\n\n'
-                f'Номер замовлення: {order.id}\n'
-                f'Загальна сума: {order.get_total_cost()} грн\n'
-                f'Адреса доставки: {order.address}, {order.city}, {order.postal_code}\n\n'
-                f'Ви можете переглянути деталі за посиланням: '
-                f'http://127.0.0.1:8000/order/detail/{order.id}/'
-            )
-            send_mail(
-                subject,
-                message,
-                'justanothermailidhwhoiam@gmail.com',
-                [order.email],
-                fail_silently=False,
-            )
+                cart.cartitem_set.all().delete()
+                if not request.user.is_authenticated:
+                    request.session['cart_id'] = None
 
-            cart.cartitem_set.all().delete()
-            if not request.user.is_authenticated:
-                request.session['cart_id'] = None
-
-            return render(request, 'order/created.html', {'order': order})
+                return render(request, 'order/created.html', {'order': order})
         return render(request, self.template_name, {'cart': cart, 'form': form})
 
 class OrderDetailView(DetailView):

@@ -21,12 +21,16 @@
         <a href="{% url 'users:subscribe' %}" class="button">Оформити підписку</a>
     {% endif %}
     <a href="{% url 'users:edit_profile' %}">Редагувати профіль</a>
-  {% endif %}
   <p><a href="{% url 'blog:posts' %}?only_followed=True">Пости відстежуваних авторів</a></p>
-  <h3>Відстежувані продукти</h3>
+  <h3>Відстежуємі продукти</h3>
   {% for tracked in tracked_products %}
-    <p>{{ tracked.product.name }} ({{ tracked.content_type.model|capfirst }})</p>
+    <p>
+      <a href="{{ tracked.product.get_absolute_url }}">{{ tracked.product.name }}</a> 
+      - {% if tracked.product.is_available and tracked.product.quantity > 0 %}В наявності ({{ tracked.product.quantity }} шт.){% else %}Немає в наявності{% endif %}
+      <a href="{% url 'shop:track_product' tracked.product.slug %}" class="button">Припинити відстежування</a>
+    </p>
   {% empty %}
-    <p>Відстежувані продукти відсутні.</p>
+    <p>Відстежуємі продукти відсутні.</p>
   {% endfor %}
+  {% endif %}
 {% endblock %}

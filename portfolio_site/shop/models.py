@@ -50,6 +50,8 @@ class Product(models.Model):
     artist = models.ForeignKey(Artist, on_delete=models.CASCADE, null=True, blank=True)
     release_year = models.PositiveIntegerField(null=True, blank=True)
     genre = models.ManyToManyField(Genre, blank=True)
+    is_available = models.BooleanField(default=True)
+    quantity = models.PositiveIntegerField(default=0)
 
     def __str__(self):
         return self.name

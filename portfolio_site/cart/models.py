@@ -2,6 +2,7 @@ from django.db import models
 from django.contrib.auth.models import User
 from django.contrib.contenttypes.fields import GenericForeignKey
 from django.contrib.contenttypes.models import ContentType
+from django.forms import ValidationError
 
 
 class Cart(models.Model):
@@ -29,3 +30,17 @@ class CartItem(models.Model):
         if self.product and hasattr(self.product, 'get_discounted_price'):
             return self.quantity * self.product.get_discounted_price()
         return 0
+    
+    def clean(self):
+        if not self.product:
+            raise ValidationError("Товар не існує.")
+        if not self.product.is_available or self.product.quantity == 0:
+            raise ValidationError(f"Товар {self.product.name} не в наявності.")
+        if self.quantity > self.product.quantity:
+            raise ValidationError(f"Недостатньо товару {self.product.name}. В наявності: {self.product.quantity} шт.")
+        
+    def save(self, *args, **kwargs):
+        self.clean()
+        super().save(*args, **kwargs)
+
+        

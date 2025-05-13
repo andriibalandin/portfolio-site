@@ -19,7 +19,8 @@
                         <td>
                             <form action="{% url 'cart:update_cart_item' item.id %}" method="post">
                                 {% csrf_token %}
-                                <input type="number" name="quantity" value="{{ item.quantity }}" min="1">
+                                <input type="number" name="quantity" value="{{ item.quantity }}" min="1" max="{{ item.product.quantity }}">
+                                <small>(В наявності: {{ item.product.quantity }} шт.)</small>
                                 <button type="submit">Оновити</button>
                             </form>
                         </td>
@@ -36,5 +37,6 @@
         <a href="{% url 'orders:order_create' %}" class="btn">Оформити замовлення</a>
     {% else %}
         <p>Кошик порожній</p>
+        <a href="{% url 'shop:product_list' %}" class="button">Повернутися до магазину</a>
     {% endif %}
 {% endblock %}

@@ -1,11 +1,14 @@
-from django.http import Http404
-from django.shortcuts import render, redirect
+from django.http import Http404, HttpResponseRedirect
+from django.shortcuts import get_object_or_404, render, redirect
+from django.views import View
 from django.views.generic import TemplateView, ListView, DetailView
 from django.contrib.auth.mixins import LoginRequiredMixin
 from .models import Category, Product, Review
 from .filters import ProductFilter
 from .forms import ReviewForm
 from django.core.paginator import Paginator
+from users.models import TrackedProduct
+from django.contrib.contenttypes.models import ContentType
 
 
 class HomeView(TemplateView):
@@ -56,6 +59,11 @@ class ProductDetailView(DetailView):
                 context['existing_review'] = existing_review
             else:
                 context['review_form'] = ReviewForm()
+            context['is_tracked'] = TrackedProduct.objects.filter(
+                user_profile=self.request.user.userprofile,
+                content_type=ContentType.objects.get_for_model(Product),
+                object_id=self.get_object().id
+            ).exists()
         return context
 
     def post(self, request, *args, **kwargs):
@@ -80,4 +88,26 @@ class ProductDetailView(DetailView):
         context = self.get_context_data()
         context['review_form'] = form
         return self.render_to_response(context)
+
+
+class TrackProductView(LoginRequiredMixin, View):
+    def get(self, request, slug):
+        product = get_object_or_404(Product, slug=slug)
+        content_type = ContentType.objects.get_for_model(Product)
+        tracked_product = TrackedProduct.objects.filter(
+            user_profile=request.user.userprofile,
+            content_type=content_type,
+            object_id=product.id
+        ).first()
+
+        if tracked_product:
+            tracked_product.delete()
+        else:
+            TrackedProduct.objects.create(
+                user_profile=request.user.userprofile,
+                content_type=content_type,
+                object_id=product.id
+            )
+
+        return HttpResponseRedirect(request.META.get('HTTP_REFERER', product.get_absolute_url()))
     

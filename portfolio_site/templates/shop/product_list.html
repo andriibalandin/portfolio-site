@@ -35,6 +35,10 @@
                     {{ filter.form.price_max }}
                 </div>
                 <div class="mb-3 form-check">
+                    {{ filter.form.is_available }}
+                    <label for="{{ filter.form.is_available.id_for_label }}" class="form-check-label">{{ filter.form.is_available.label }}</label>
+                </div>
+                <div class="mb-3 form-check">
                     {{ filter.form.has_discount }}
                     <label class="form-check-label" for="{{ filter.form.has_discount.id_for_label }}">{{ filter.form.has_discount.label }}</label>
                 </div>
@@ -64,6 +68,7 @@
                         {% else %}
                             <p class="card-text">Ціна: <del>{{ product.price }}</del> <b style="color: red;">{{ product.get_discounted_price }} грн (ЗНИЖКА -{{ product.discount }}%)</b></p>
                         {% endif %}
+                        <p>Наявність: {% if product.is_available and product.quantity > 0 %}В наявності ({{ product.quantity }} шт.){% else %}Немає в наявності{% endif %}</p>
                         {% if product.category.slug == 'vinyl-records' %}
                             <p class="card-text">Виконавець: <a href="{% url 'shop:product_list' %}?artist={{ product.artist.id }}">{{ product.artist }}</a></p>
                             <p class="card-text">Жанр: 
