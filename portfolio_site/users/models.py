@@ -2,11 +2,12 @@ from django.contrib.auth.models import User
 from django.db import models
 from django.contrib.contenttypes.fields import GenericForeignKey
 from django.contrib.contenttypes.models import ContentType
+from easy_thumbnails.fields import ThumbnailerImageField
 
 
 class UserProfile(models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE)
-    avatar = models.ImageField(upload_to='avatars/', blank=True, null=True)
+    avatar = ThumbnailerImageField(upload_to='avatars/', blank=True, null=True)
     subscribe_to_newsletter = models.BooleanField(default=True)
     followed_authors = models.ManyToManyField('self', symmetrical=False, related_name='followers', blank=True)
 

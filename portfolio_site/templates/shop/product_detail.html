@@ -1,11 +1,12 @@
 {% extends 'shop/base.html' %}
+{% load static thumbnail %}
 {% block content %}
 <div class="container">
     <h1>{{ product.name }}</h1>
     {% if product.image %}
-        <img src="{{ product.image.url }}" alt="{{ product.name }}" class="img-fluid mb-3">
+        <img src="{% thumbnail product.image 'medium' %}" alt="{{ product.name }}" width="200" height="200">
     {% else %}
-        <p>Зображення відсутнє</p>
+        <img src="{% get_static_prefix %}images/placeholder.jpg" alt="No Image" width="200" height="200">
     {% endif %}
     <p>{{ product.description }}</p>
     {% if product.get_discounted_price == product.price %}

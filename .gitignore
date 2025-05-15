@@ -3,3 +3,4 @@ venv/
 portfolio_site/db.sqlite3
 portfolio_site/avatars
 portfolio_site/portfolio_site/__pycache__
+portfolio_site/media

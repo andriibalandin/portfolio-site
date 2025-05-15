@@ -1,4 +1,5 @@
 {% extends 'shop/base.html' %}
+{% load static thumbnail %}
 {% block content %}
   <h1>Профіль користувача {{ user.username }}</h1>
   {% if user != request.user %}
@@ -9,9 +10,9 @@
     {% endif %}
   {% endif %}
   {% if user.userprofile.avatar %}
-    <img src="{{ user.userprofile.avatar.url }}" alt="Аватар">
+    <img src="{% thumbnail user.userprofile.avatar 'avatar' %}" alt="Аватар {{ user.username }}" width="150" height="150">
   {% else %}
-    <p>Аватар відсутній</p>
+    <img src="{% get_static_prefix %}images/placeholder_avatar.png" alt="No Avatar" width="150" height="150">
   {% endif %}
   {% if request.user == user %}
   {% if user_subscription %}
@@ -22,6 +23,7 @@
     {% endif %}
     <a href="{% url 'users:edit_profile' %}">Редагувати профіль</a>
   <p><a href="{% url 'blog:posts' %}?only_followed=True">Пости відстежуваних авторів</a></p>
+  <a href="{% url 'blog:posts' %}?author={{user.id}}" class="button">Переглянути свої пости</a>
   <h3>Відстежуємі продукти</h3>
   {% for tracked in tracked_products %}
     <p>
@@ -32,5 +34,7 @@
   {% empty %}
     <p>Відстежуємі продукти відсутні.</p>
   {% endfor %}
+  {% else %}
+    <a href="{% url 'blog:posts' %}?author={{user.id}}" class="button">Переглянути пости автора</a>
   {% endif %}
 {% endblock %}

@@ -2,6 +2,7 @@ from django.db import models
 from django.urls import reverse
 from django.contrib.auth.models import User
 from django.db.models import Avg
+from easy_thumbnails.fields import ThumbnailerImageField
 
 
 class Category(models.Model):
@@ -45,7 +46,7 @@ class Product(models.Model):
     discount = models.DecimalField(max_digits=5, decimal_places=2, null=True, blank=True)
     rating = models.FloatField(default=0.0)
     is_new = models.BooleanField(default=False, null=True, blank=True)
-    image = models.ImageField(upload_to='products/', blank=True, null=True)
+    image = ThumbnailerImageField(upload_to='products/', blank=True, null=True)
     manufacturer = models.ForeignKey(Manufacturer, on_delete=models.CASCADE)
     artist = models.ForeignKey(Artist, on_delete=models.CASCADE, null=True, blank=True)
     release_year = models.PositiveIntegerField(null=True, blank=True)

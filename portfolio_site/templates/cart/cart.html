@@ -1,4 +1,5 @@
 {% extends 'shop/base.html' %}
+{% load static thumbnail %}
 {% block content %}
     <h1>Кошик</h1>
     {% if cart.cartitem_set.exists %}
@@ -6,6 +7,7 @@
             <thead>
                 <tr>
                     <th>Товар</th>
+                    <th> </th>
                     <th>Кількість</th>
                     <th>Ціна</th>
                     <th>Всього</th>
@@ -16,6 +18,13 @@
                 {% for item in cart.cartitem_set.all %}
                     <tr>
                         <td><a href="{% url 'shop:product_detail' item.product.slug %}">{{ item.product.name }}</a></td>
+                        <td>
+                        {% if item.product.image %}
+                            <img src="{% thumbnail item.product.image 'cart' %}" alt="{{ item.product.name }}" width="50" height="50">
+                        {% else %}
+                            <img src="{% get_static_prefix %}images/placeholder.jpg" alt="No Image" width="50" height="50">
+                        {% endif %}
+                        </td>
                         <td>
                             <form action="{% url 'cart:update_cart_item' item.id %}" method="post">
                                 {% csrf_token %}

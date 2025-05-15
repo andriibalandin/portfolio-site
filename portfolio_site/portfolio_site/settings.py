@@ -38,6 +38,7 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    'easy_thumbnails',
     'django_filters',
     'shop.apps.ShopConfig',
     'blog.apps.BlogConfig',
@@ -144,7 +145,6 @@ EMAIL_USE_TLS = True
 EMAIL_HOST_USER = 'justanothermailidhwhoiam@gmail.com'  #пошта з якої відправляються листи
 EMAIL_HOST_PASSWORD = 'woho pawt dgti wzpt'  #пароль додатку з пошти
 
-
 #stripe
 STRIPE_PUBLISHABLE_KEY = ''  #тестовий publishable key
 STRIPE_SECRET_KEY = ''      #тестовий secret key
@@ -152,3 +152,23 @@ STRIPE_PRICE_ID_MONTHLY = 'price_1RNsHWPMBzLVC7yQGGJJGkls'   #ID ціни для
 STRIPE_PRICE_ID_YEARLY = 'price_1RNsIMPMBzLVC7yQUI8RwU0R'    #ID ціни для річної підписки
 SITE_DOMAIN = 'http://127.0.0.1:8000'   #домен цього сайту
 
+THUMBNAIL_ALIASES = {
+    '': {
+        'small': {'size': (100, 100)},
+        'medium': {'size': (200, 200)},
+        'avatar': {'size': (150, 150)},
+        'comment_avatar': {'size': (50, 50)},
+        'cart': {'size': (50, 50)},
+    },
+}
+
+THUMBNAIL_DEFAULT_STORAGE = 'django.core.files.storage.FileSystemStorage'
+THUMBNAIL_MEDIA_ROOT = BASE_DIR / 'media/thumbnails'
+THUMBNAIL_MEDIA_URL = '/media/thumbnails/'
+THUMBNAIL_BASEDIR = 'thumbnails'
+THUMBNAIL_QUALITY = 85 
+THUMBNAIL_PRESERVE_EXTENSIONS = True  
+THUMBNAIL_DEFAULT_IMAGE = '/static/images/placeholder.png' 
+
+MEDIA_URL = '/media/'
+MEDIA_ROOT = BASE_DIR / 'media'

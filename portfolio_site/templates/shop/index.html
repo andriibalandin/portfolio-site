@@ -8,6 +8,11 @@
             <div class="col-md-4">
                 <div class="card mb-3">
                     <div class="card-body">
+                        {% if product.image %}
+                            <img src="{% thumbnail product.image 'small' %}" alt="{{ product.name }}" width="100" height="100">
+                        {% else %}
+                            <img src="{% get_static_prefix %}images/placeholder.jpg" alt="No Image" width="100" height="100">
+                        {% endif %}
                         <h5 class="card-title"><a href="{{ product.get_absolute_url }}">{{ product.name }}</a></h5>
                         <p class="card-text">{{ product.get_discounted_price }} грн</p>
                         <p class="card-text">Виконавець: <a href="{% url 'shop:product_list' %}?artist={{ product.artist.id }}">{{ product.artist }}</a></p>
@@ -26,6 +31,11 @@
             <div class="col-md-4">
                 <div class="card mb-3">
                     <div class="card-body">
+                        {% if product.image %}
+                            <img src="{% thumbnail product.image 'small' %}" alt="{{ product.name }}" width="100" height="100">
+                        {% else %}
+                            <img src="{% get_static_prefix %}images/placeholder.jpg" alt="No Image" width="100" height="100">
+                        {% endif %}
                         <h5 class="card-title"><a href="{{ product.get_absolute_url }}">{{ product.name }}</a></h5>
                         <p class="card-text">{{ product.get_discounted_price }} грн</p>
                         <p class="card-text">Виконавець: <a href="{% url 'shop:product_list' %}?artist={{ product.artist.id }}">{{ product.artist }}</a></p>
@@ -44,6 +54,11 @@
         <div class="col-md-4">
             <div class="card mb-3">
                 <div class="card-body">
+                    {% if product.image %}
+                        <img src="{% thumbnail product.image 'small' %}" alt="{{ product.name }}" width="100" height="100">
+                    {% else %}
+                        <img src="{% get_static_prefix %}images/placeholder.jpg" alt="No Image" width="100" height="100">
+                    {% endif %}
                     <h5 class="card-title"><a href="{{ product.get_absolute_url }}">{{ product.name }}</a></h5>
                     <p class="card-text">{{ product.get_discounted_price }} грн</p>
                 </div>
@@ -61,6 +76,11 @@
             <div class="col-md-4">
                 <div class="card mb-3">
                     <div class="card-body">
+                        {% if product.image %}
+                            <img src="{% thumbnail product.image 'small' %}" alt="{{ product.name }}" width="100" height="100">
+                        {% else %}
+                            <img src="{% get_static_prefix %}images/placeholder.jpg" alt="No Image" width="100" height="100">
+                        {% endif %}
                         <h5 class="card-title"><a href="{{ product.get_absolute_url }}">{{ product.name }}</a></h5>
                         <p class="card-text">{{ product.get_discounted_price }} грн</p>
                     </div>
