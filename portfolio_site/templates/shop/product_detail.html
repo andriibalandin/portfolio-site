@@ -1,42 +1,51 @@
 {% extends 'shop/base.html' %}
 {% load static thumbnail %}
 {% block content %}
-<div class="container">
-    <h1>{{ product.name }}</h1>
-    {% if product.image %}
-        <img src="{% thumbnail product.image 'medium' %}" alt="{{ product.name }}" width="200" height="200">
-    {% else %}
-        <img src="{% get_static_prefix %}images/placeholder.jpg" alt="No Image" width="200" height="200">
-    {% endif %}
-    <p>{{ product.description }}</p>
-    {% if product.get_discounted_price == product.price %}
-        <p class="card-text">Ціна: {{ product.get_discounted_price }} грн</p>
-    {% else %}
-        <p class="card-text">Ціна: <del>{{ product.price }}</del> <b style="color: red;">{{ product.get_discounted_price }} грн (ЗНИЖКА -{{ product.discount }}%)</b></p>
-    {% endif %}
-    <p>Наявність: {% if product.is_available and product.quantity > 0 %}В наявності ({{ product.quantity }} шт.){% else %}Немає в наявності{% endif %}</p>
-    <p>Середній рейтинг: {{ product.rating }}</p>
-    {% if product.category.slug == 'vinyl-records' %}
-        <p>Виконавець: {{ product.artist }}</p>
-        <p>Рік випуску: {{ product.release_year }}</p>
-        <p>Жанр: {{ product.genre.all|join:", " }}</p>
-    {% endif %}
-    {% if user.is_authenticated %}
-        {% if is_tracked %}
-            <a href="{% url 'shop:track_product' product.slug %}" class="button">Припинити відстежування</a>
-        {% else %}
-            <a href="{% url 'shop:track_product' product.slug %}" class="button">Відстежувати</a>
-        {% endif %}
-    {% else %}
-        <a href="{% url 'users:login' %}" class="button">Увійдіть, щоб відстежувати</a>
-    {% endif %}
+<div class="product-detail">
+    <div class="row">
+        <div class="col-md-4">
+            {% if product.image %}
+                <img src="{% thumbnail product.image 'medium' %}" alt="{{ product.name }}" class="img-fluid">
+            {% else %}
+                <img src="{% get_static_prefix %}images/placeholder.jpg" alt="No Image" class="img-fluid">
+            {% endif %}
+        </div>
+        <div class="col-md-8">
+            <h1>{{ product.name }}</h1>
+            <p>{{ product.description }}</p>
+            {% if product.get_discounted_price == product.price %}
+                <p class="card-text">Ціна: {{ product.get_discounted_price }} грн</p>
+            {% else %}
+                <p class="card-text">Ціна: <del>{{ product.price }}</del> <b style="color: #F97316;">{{ product.get_discounted_price }} грн (ЗНИЖКА -{{ product.discount }}%)</b></p>
+            {% endif %}
+            <p>Наявність: {% if product.is_available and product.quantity > 0 %}В наявності ({{ product.quantity }} шт.){% else %}Немає в наявності{% endif %}</p>
+            <p>Середній рейтинг: {{ product.rating }}</p>
+            {% if product.category.slug == 'vinyl-records' %}
+                <p>Виконавець: {{ product.artist }}</p>
+                <p>Рік випуску: {{ product.release_year }}</p>
+                <p>Жанр: {{ product.genre.all|join:", " }}</p>
+            {% endif %}
+            <div class="mt-3">
+                {% if user.is_authenticated %}
+                    {% if is_tracked %}
+                        <a href="{% url 'shop:track_product' product.slug %}" class="button">Припинити відстежування</a>
+                    {% else %}
+                        <a href="{% url 'shop:track_product' product.slug %}" class="button">Відстежувати</a>
+                    {% endif %}
+                {% else %}
+                    <a href="{% url 'users:login' %}" class="button">Увійдіть, щоб відстежувати</a>
+                {% endif %}
+                <a href="{% url 'cart:add_to_cart' product_id=product.id %}" class="button">Додати в кошик</a>
+            </div>
+        </div>
+    </div>
 
-    <a href="{% url 'cart:add_to_cart' product_id=product.id %}" class="button">Додати в кошик</a>
-    <hr>
+    <hr class="my-5">
+
     <h3>Відгуки</h3>
     {% if product.reviews.exists %}
         {% for review in page_obj %}
-            <div class="card mb-2">
+            <div class="card mb-3">
                 <div class="card-body">
                     <p class="card-text">{{ review.comment }}</p>
                     <p class="card-text">Оцінка: {{ review.rating }}/5</p>
@@ -46,7 +55,7 @@
         {% endfor %}
         {% if page_obj.has_other_pages %}
             <nav aria-label="Page navigation">
-                <ul class="pagination">
+                <ul class="pagination justify-content-center">
                     {% if page_obj.has_previous %}
                         <li class="page-item">
                             <a class="page-link" href="?page={{ page_obj.previous_page_number }}">Попередня</a>
@@ -68,9 +77,10 @@
     {% else %}
         <p>Відгуки відсутні.</p>
     {% endif %}
+
     {% if user.is_authenticated %}
-        <h4>{{ existing_review|yesno:"Редагувати відгук,Додати відгук" }}</h4>
-        <form method="post">
+        <h4 class="mt-4">{{ existing_review|yesno:"Редагувати відгук,Додати відгук" }}</h4>
+        <form method="post" class="card p-4">
             {% csrf_token %}
             {{ review_form.as_p }}
             <button type="submit" class="btn btn-primary">{{ existing_review|yesno:"Зберегти зміни,Надіслати" }}</button>

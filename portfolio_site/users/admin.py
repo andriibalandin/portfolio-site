@@ -3,7 +3,7 @@ from .models import UserProfile, Subscription, TrackedProduct
 
 @admin.register(UserProfile)
 class UserProfileAdmin(admin.ModelAdmin):
-    list_display = ['user', 'subscribe_to_newsletter']
+    list_display = ['user']
 
 
 @admin.register(Subscription)

@@ -16,17 +16,17 @@ class HomeView(TemplateView):
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        context['new_products'] = Product.objects.filter(is_new=True).exclude(category__slug='vinyl-records')[:3]
-        context['new_vinyl'] = Product.objects.filter(is_new=True, category__slug='vinyl-records')[:3]
-        context['discounted_products'] = Product.objects.filter(discount__isnull=False).exclude(category__slug='vinyl-records')[:3]
-        context['discounted_vinyl'] = Product.objects.filter(discount__isnull=False, category__slug='vinyl-records')[:3]
+        context['new_products'] = Product.objects.filter(is_new=True).exclude(category__slug='vinyl-records')[:4]
+        context['new_vinyl'] = Product.objects.filter(is_new=True, category__slug='vinyl-records')[:4]
+        context['discounted_products'] = Product.objects.filter(discount__isnull=False).exclude(category__slug='vinyl-records')[:4]
+        context['discounted_vinyl'] = Product.objects.filter(discount__isnull=False, category__slug='vinyl-records')[:4]
         return context
 
 
 class ProductListView(ListView):
     template_name = 'shop/product_list.html'
     context_object_name = 'products'
-    paginate_by = 10
+    paginate_by = 12
 
     def get_queryset(self):
         queryset = Product.objects.all()

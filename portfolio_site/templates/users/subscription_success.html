@@ -1,6 +1,10 @@
 {% extends 'shop/base.html' %}
 {% block content %}
-    <h1>Підписка успішно оформлена!</h1>
-    <p>Ваша {{ subscription.plan|capfirst }} підписка активна до {{ subscription.end_date }}.</p>
-    <a href="{% url 'users:profile' %}">Повернутися до профілю</a>
+<div class="card text-center">
+    <div class="card-body">
+        <h1>Підписка успішно оформлена!</h1>
+        <p>Ваша {{ subscription.plan|capfirst }} підписка активна до {{ subscription.end_date }}.</p>
+        <a href="{% url 'users:profile' %}" class="btn btn-primary">Повернутися до профілю</a>
+    </div>
+</div>
 {% endblock %}

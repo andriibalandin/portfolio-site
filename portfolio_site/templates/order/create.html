@@ -1,33 +1,37 @@
 {% extends 'shop/base.html' %}
 {% block content %}
-    <h1>Оформлення замовлення</h1>
-    <h2>Ваш кошик</h2>
-    <table>
-        <thead>
-            <tr>
-                <th>Товар</th>
-                <th>Кількість</th>
-                <th>Ціна</th>
-                <th>Всього</th>
-            </tr>
-        </thead>
-        <tbody>
-            {% for item in cart.cartitem_set.all %}
+<div class="card">
+    <div class="card-body">
+        <h1>Оформлення замовлення</h1>
+        <h2>Ваш кошик</h2>
+        <table class="cart-table">
+            <thead>
                 <tr>
-                    <td>{{ item.product.name }}</td>
-                    <td>{{ item.quantity }} (В наявності: {{ item.product.quantity }} шт.)</td>
-                    <td>{{ item.product.get_discounted_price }} грн</td>
-                    <td>{{ item.get_total_price }} грн</td>
+                    <th>Товар</th>
+                    <th>Кількість</th>
+                    <th>Ціна</th>
+                    <th>Всього</th>
                 </tr>
-            {% endfor %}
-        </tbody>
-    </table>
-    <p><strong>Загальна сума: {{ cart.get_total }} грн</strong></p>
+            </thead>
+            <tbody>
+                {% for item in cart.cartitem_set.all %}
+                    <tr>
+                        <td>{{ item.product.name }}</td>
+                        <td>{{ item.quantity }} (В наявності: {{ item.product.quantity }} шт.)</td>
+                        <td>{{ item.product.get_discounted_price }} грн</td>
+                        <td>{{ item.get_total_price }} грн</td>
+                    </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+        <p class="text-end"><strong>Загальна сума: {{ cart.get_total }} грн</strong></p>
 
-    <h2>Ваші дані</h2>
-    <form method="post">
-        {% csrf_token %}
-        {{ form.as_p }}
-        <button type="submit">Підтвердити замовлення</button>
-    </form>
+        <h2>Ваші дані</h2>
+        <form method="post" class="mt-4">
+            {% csrf_token %}
+            {{ form.as_p }}
+            <button type="submit" class="btn btn-primary">Підтвердити замовлення</button>
+        </form>
+    </div>
+</div>
 {% endblock %}

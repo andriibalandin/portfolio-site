@@ -8,7 +8,7 @@ class ProfileEditForm(forms.ModelForm):
 
     class Meta:
         model = UserProfile
-        fields = ['avatar', 'subscribe_to_newsletter']
+        fields = ['avatar']
 
     def __init__(self, *args, **kwargs):
         user = kwargs.pop('user', None)

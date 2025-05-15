@@ -1,10 +1,30 @@
 {% extends 'shop/base.html' %}
+{% load static %}
 {% block content %}
-    <h1>Редагування профілю</h1>
-    <form method="post" enctype="multipart/form-data">
-        {% csrf_token %}
-        {{ form.as_p }}
-        <button type="submit" class="button">Зберегти</button>
-    </form>
-    <a href="{% url 'users:profile' %}">Назад до профілю</a>
+<div class="container">
+    <div class="card p-4" style="max-width: 600px; margin: 0 auto;">
+        <h1>Редагування профілю</h1>
+        <form method="post" enctype="multipart/form-data">
+            {% csrf_token %}
+            {% for field in form %}
+                <div class="form-group">
+                    <label for="{{ field.id_for_label }}" class="form-label">{{ field.label }}</label>
+                    {{ field }}
+                    {% if field.errors %}
+                        <div class="text-danger">
+                            {% for error in field.errors %}
+                                <small>{{ error }}</small>
+                            {% endfor %}
+                        </div>
+                    {% endif %}
+                    {% if field.help_text %}
+                        <small class="form-text text-muted">{{ field.help_text }}</small>
+                    {% endif %}
+                </div>
+            {% endfor %}
+            <button type="submit" class="btn btn-primary">Зберегти</button>
+            <a href="{% url 'users:profile' %}" class="btn btn-secondary">Назад до профілю</a>
+        </form>
+    </div>
+</div>
 {% endblock %}

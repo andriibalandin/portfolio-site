@@ -1,12 +1,11 @@
 {% extends 'shop/base.html' %}
 {% load static thumbnail %}
 {% block content %}
-<div class="container">
-    <h1>Каталог</h1>
-    <div class="row">
-        <div class="col-md-3">
-            <h3>Фільтрація</h3>
-            <form method="get" class="p-3 bg-light rounded">
+<div class="row">
+<div class="col-md-3">
+        <div class="filter-section">
+            <h3 class="text-center">Фільтрація</h3>
+            <form method="get">
                 <div class="mb-3">
                     <label for="{{ filter.form.name.id_for_label }}" class="form-label">{{ filter.form.name.label }}</label>
                     {{ filter.form.name }}
@@ -59,76 +58,76 @@
                 <a href="{% url 'shop:product_list' %}" class="btn btn-secondary">Скинути фільтри</a>
             </form>
         </div>
-        <div class="col-md-9">
+    </div>
+    <div class="col-md-9">
+        <h1 class="text-center">Каталог</h1>
+        <div class="row">
             {% for product in page_obj %}
-                <div class="card mb-3">
-                    <div class="card-body">
+                <div class="col-lg-3 col-md-4 col-sm-6 mb-4">
+                    <div class="card h-100">
                         {% if product.image %}
-                            <img src="{% thumbnail product.image 'small' %}" alt="{{ product.name }}" width="100" height="100">
+                            <img src="{% thumbnail product.image 'small' %}" alt="{{ product.name }}" class="card-img-top">
                         {% else %}
-                            <img src="{% get_static_prefix %}images/placeholder.jpg" alt="No Image" width="100" height="100">
+                            <img src="{% get_static_prefix %}images/placeholder.jpg" alt="No Image" class="card-img-top">
                         {% endif %}
-                        <h5 class="card-title"><a href="{{ product.get_absolute_url }}">{{ product.name }}</a></h5>
-                        {% if product.get_discounted_price == product.price %}
-                            <p class="card-text">Ціна: {{ product.get_discounted_price }} грн</p>
-                        {% else %}
-                            <p class="card-text">Ціна: <del>{{ product.price }}</del> <b style="color: red;">{{ product.get_discounted_price }} грн (ЗНИЖКА -{{ product.discount }}%)</b></p>
-                        {% endif %}
-                        {% if product.category.slug == 'vinyl-records' %}
-                            <p class="card-text">Виконавець: <a href="{% url 'shop:product_list' %}?artist={{ product.artist.id }}">{{ product.artist }}</a></p>
-                            <p class="card-text">Жанр: 
-                                {% for genre in product.genre.all %}
-                                    <a href="{% url 'shop:product_list' %}?genre={{ genre.id }}">{{ genre.name }}</a>{% if not forloop.last %}, {% endif %}
-                                {% empty %}
-                                    Немає
-                                {% endfor %}
-                            </p>
-                        {% endif %}
-                        <p class="card-text">Категорія: <a href="{% url 'shop:product_list' %}?category={{ product.category.id }}">{{ product.category.name }}</a></p>
+                        <div class="card-body">
+                            {% if product.category.slug == 'vinyl-records' %}
+                                <h5 class="card-title"><a href="{{ product.get_absolute_url }}">{{ product.artist }} - {{ product.name }}</a></h5>
+                            {% else %}
+                                <h5 class="card-title"><a href="{{ product.get_absolute_url }}">{{ product.name }}</a></h5>
+                            {% endif %}
+                            {% if product.get_discounted_price == product.price %}
+                                <p class="card-text">{{ product.get_discounted_price }} грн</p>
+                            {% else %}
+                                <p class="card-text"><del>{{ product.price }}</del> <b style="color: #F97316;">{{ product.get_discounted_price }} грн (-{{ product.discount }}%)</b></p>
+                            {% endif %}
+                            <p class="card-text"><a href="{% url 'shop:product_list' %}?category={{ product.category.id }}">{{ product.category.name }}</a></p>
+                            <a href="{% url 'cart:add_to_cart' product_id=product.id %}" class="btn btn-primary btn-sm">Додати в кошик</a>
+                        </div>
                     </div>
                 </div>
             {% empty %}
-                <h2>Продукти відсутні</h2>
+                <div class="col-12">
+                    <h2>Продукти відсутні</h2>
+                </div>
             {% endfor %}
-
-            {% if page_obj.has_other_pages %}
-                <nav aria-label="Page navigation">
-                    <ul class="pagination">
-                        {% if page_obj.has_previous %}
-                            <li class="page-item">
-                                <a class="page-link" href="?page={{ page_obj.previous_page_number }}{% if request.GET.urlencode|slice:"5:" %}&{{ request.GET.urlencode|slice:"5:" }}{% endif %}">Попередня</a>
-                            </li>
-                        {% else %}
-                            <li class="page-item disabled">
-                                <span class="page-link">Попередня</span>
-                            </li>
-                        {% endif %}
-
-                        {% for num in page_obj.paginator.page_range %}
-                            {% if page_obj.number == num %}
-                                <li class="page-item active">
-                                    <span class="page-link">{{ num }}</span>
-                                </li>
-                            {% elif num > page_obj.number|add:'-3' and num < page_obj.number|add:'3' %}
-                                <li class="page-item">
-                                    <a class="page-link" href="?page={{ num }}{% if request.GET.urlencode|slice:"5:" %}&{{ request.GET.urlencode|slice:"5:" }}{% endif %}">{{ num }}</a>
-                                </li>
-                            {% endif %}
-                        {% endfor %}
-
-                        {% if page_obj.has_next %}
-                            <li class="page-item">
-                                <a class="page-link" href="?page={{ page_obj.next_page_number }}{% if request.GET.urlencode|slice:"5:" %}&{{ request.GET.urlencode|slice:"5:" }}{% endif %}">Наступна</a>
-                            </li>
-                        {% else %}
-                            <li class="page-item disabled">
-                                <span class="page-link">Наступна</span>
-                            </li>
-                        {% endif %}
-                    </ul>
-                </nav>
-            {% endif %}
         </div>
+
+        {% if page_obj.has_other_pages %}
+            <nav aria-label="Page navigation">
+                <ul class="pagination justify-content-center">
+                    {% if page_obj.has_previous %}
+                        <li class="page-item">
+                            <a class="page-link" href="?page={{ page_obj.previous_page_number }}{% if request.GET.urlencode|slice:'5:' %}&{{ request.GET.urlencode|slice:'5:' }}{% endif %}">Попередня</a>
+                        </li>
+                    {% else %}
+                        <li class="page-item disabled">
+                            <span class="page-link">Попередня</span>
+                        </li>
+                    {% endif %}
+                    {% for num in page_obj.paginator.page_range %}
+                        {% if page_obj.number == num %}
+                            <li class="page-item active">
+                                <span class="page-link">{{ num }}</span>
+                            </li>
+                        {% elif num > page_obj.number|add:'-3' and num < page_obj.number|add:'3' %}
+                            <li class="page-item">
+                                <a class="page-link" href="?page={{ num }}{% if request.GET.urlencode|slice:'5:' %}&{{ request.GET.urlencode|slice:'5:' }}{% endif %}">{{ num }}</a>
+                            </li>
+                        {% endif %}
+                    {% endfor %}
+                    {% if page_obj.has_next %}
+                        <li class="page-item">
+                            <a class="page-link" href="?page={{ page_obj.next_page_number }}{% if request.GET.urlencode|slice:'5:' %}&{{ request.GET.urlencode|slice:'5:' }}{% endif %}">Наступна</a>
+                        </li>
+                    {% else %}
+                        <li class="page-item disabled">
+                            <span class="page-link">Наступна</span>
+                        </li>
+                    {% endif %}
+                </ul>
+            </nav>
+        {% endif %}
     </div>
 </div>
 {% endblock %}

@@ -8,7 +8,6 @@ from easy_thumbnails.fields import ThumbnailerImageField
 class UserProfile(models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE)
     avatar = ThumbnailerImageField(upload_to='avatars/', blank=True, null=True)
-    subscribe_to_newsletter = models.BooleanField(default=True)
     followed_authors = models.ManyToManyField('self', symmetrical=False, related_name='followers', blank=True)
 
     def __str__(self):

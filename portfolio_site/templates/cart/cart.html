@@ -1,51 +1,61 @@
 {% extends 'shop/base.html' %}
 {% load static thumbnail %}
 {% block content %}
-    <h1>Кошик</h1>
-    {% if cart.cartitem_set.exists %}
-        <table>
-            <thead>
-                <tr>
-                    <th>Товар</th>
-                    <th> </th>
-                    <th>Кількість</th>
-                    <th>Ціна</th>
-                    <th>Всього</th>
-                    <th>Дії</th>
-                </tr>
-            </thead>
-            <tbody>
-                {% for item in cart.cartitem_set.all %}
+<h1>Кошик</h1>
+{% if cart.cartitem_set.exists %}
+    <div class="card">
+        <div class="card-body">
+            <table class="cart-table">
+                <thead>
                     <tr>
-                        <td><a href="{% url 'shop:product_detail' item.product.slug %}">{{ item.product.name }}</a></td>
-                        <td>
-                        {% if item.product.image %}
-                            <img src="{% thumbnail item.product.image 'cart' %}" alt="{{ item.product.name }}" width="50" height="50">
-                        {% else %}
-                            <img src="{% get_static_prefix %}images/placeholder.jpg" alt="No Image" width="50" height="50">
-                        {% endif %}
-                        </td>
-                        <td>
-                            <form action="{% url 'cart:update_cart_item' item.id %}" method="post">
-                                {% csrf_token %}
-                                <input type="number" name="quantity" value="{{ item.quantity }}" min="1" max="{{ item.product.quantity }}">
-                                <small>(В наявності: {{ item.product.quantity }} шт.)</small>
-                                <button type="submit">Оновити</button>
-                            </form>
-                        </td>
-                        <td>{{ item.product.get_discounted_price }} грн</td>
-                        <td>{{ item.get_total_price }} грн</td>
-                        <td>
-                            <a href="{% url 'cart:remove_cart_item' item.id %}">Видалити</a>
-                        </td>
+                        <th>Товар</th>
+                        <th>Зображення</th>
+                        <th>Кількість</th>
+                        <th>Ціна</th>
+                        <th>Всього</th>
+                        <th>Дії</th>
                     </tr>
-                {% endfor %}
+                </thead>
+                <tbody>
+                    {% for item in cart.cartitem_set.all %}
+                        <tr>
+                            <td><a href="{% url 'shop:product_detail' item.product.slug %}">{{ item.product.name }}</a></td>
+                            <td>
+                                {% if item.product.image %}
+                                    <img src="{% thumbnail item.product.image 'cart' %}" alt="{{ item.product.name }}" width="50" height="50">
+                                {% else %}
+                                    <img src="{% get_static_prefix %}images/placeholder.jpg" alt="No Image" width="50" height="50">
+                                {% endif %}
+                            </td>
+                            <td>
+                                <form action="{% url 'cart:update_cart_item' item.id %}" method="post" class="d-flex align-items-center">
+                                    {% csrf_token %}
+                                    <input type="number" name="quantity" value="{{ item.quantity }}" min="1" max="{{ item.product.quantity }}" class="form-control me-2" style="width: 80px;">
+                                    <button type="submit" class="btn btn-primary btn-sm">Оновити</button>
+                                </form>
+                                <small>(В наявності: {{ item.product.quantity }} шт.)</small>
+                            </td>
+                            <td>{{ item.product.get_discounted_price }} грн</td>
+                            <td>{{ item.get_total_price }} грн</td>
+                            <td>
+                                <a href="{% url 'cart:remove_cart_item' item.id %}" class="btn btn-secondary btn-sm">Видалити</a>
+                            </td>
+                        </tr>
+                    {% endfor %}
                 </tbody>
-        </table>
-        <p><strong>Загальна сума: {{ cart.get_total }} грн</strong></p>
-        <a href="{% url 'orders:order_create' %}" class="btn">Оформити замовлення</a>
-    {% else %}
-        <p>Кошик порожній</p>
-        <a href="{% url 'shop:product_list' %}" class="button">Повернутися до магазину</a>
-    {% endif %}
+            </table>
+            <p class="text-end"><strong>Загальна сума: {{ cart.get_total }} грн</strong></p>
+            <div class="text-end">
+                <a href="{% url 'orders:order_create' %}" class="btn btn-primary">Оформити замовлення</a>
+            </div>
+        </div>
+    </div>
+{% else %}
+    <div class="card">
+        <div class="card-body text-center">
+            <p>Кошик порожній</p>
+            <a href="{% url 'shop:product_list' %}" class="btn btn-primary">Повернутися до магазину</a>
+        </div>
+    </div>
+{% endif %}
 {% endblock %}

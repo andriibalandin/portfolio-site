@@ -1,97 +1,109 @@
 {% extends 'shop/base.html' %}
+{% load static thumbnail %}
 {% block content %}
-<div class="container">
-    <h1>Вітаємо в магазині вінілових платівок!</h1>
-    <h2>Новинки вінілу!</h2>
-    <div class="row">
-        {% for product in new_vinyl %}
-            <div class="col-md-4">
-                <div class="card mb-3">
-                    <div class="card-body">
+<div class="index-section">
+    <h1 class="mb-4 text-center">Вітаємо в магазині вінілових платівок!</h1>
+
+    <section class="index-section">
+        <h2 class="text-center">Новинки вінілу</h2>
+        <div class="row">
+            {% for product in new_vinyl %}
+                <div class="col-lg-3 col-md-4 col-sm-6 mb-4">
+                    <div class="card h-100">
                         {% if product.image %}
-                            <img src="{% thumbnail product.image 'small' %}" alt="{{ product.name }}" width="100" height="100">
+                            <img src="{% thumbnail product.image 'small' %}" alt="{{ product.name }}" class="card-img-top">
                         {% else %}
-                            <img src="{% get_static_prefix %}images/placeholder.jpg" alt="No Image" width="100" height="100">
+                            <img src="{% get_static_prefix %}images/placeholder.jpg" alt="No Image" class="card-img-top">
                         {% endif %}
-                        <h5 class="card-title"><a href="{{ product.get_absolute_url }}">{{ product.name }}</a></h5>
-                        <p class="card-text">{{ product.get_discounted_price }} грн</p>
-                        <p class="card-text">Виконавець: <a href="{% url 'shop:product_list' %}?artist={{ product.artist.id }}">{{ product.artist }}</a></p>
+                        <div class="card-body">
+                            <h5 class="card-title"><a href="{{ product.get_absolute_url }}">{{ product.name }}</a></h5>
+                            <p class="card-text">Ціна: {{ product.get_discounted_price }} грн</p>
+                            <p class="card-text">Виконавець: <a href="{% url 'shop:product_list' %}?artist={{ product.artist.id }}">{{ product.artist }}</a></p>
+                            <a href="{% url 'cart:add_to_cart' product_id=product.id %}" class="btn btn-primary btn-sm">Додати в кошик</a>
+                        </div>
                     </div>
                 </div>
+            {% endfor %}
+            <div class="col-12 text-center">
+                <a href="{% url 'shop:product_list' %}?is_new=true" class="btn btn-primary">Переглянути всі новинки</a>
             </div>
-        {% endfor %}
-        <div class="col-12">
-            <a href="{% url 'shop:product_list' %}?is_new=true" class="btn btn-primary">Переглянути всі новинки</a>
         </div>
-    </div>
+    </section>
 
-    <h2>Знижки на вініл!</h2>
-    <div class="row">
-        {% for product in discounted_vinyl %}
-            <div class="col-md-4">
-                <div class="card mb-3">
-                    <div class="card-body">
+    <section class="index-section">
+        <h2 class="text-center" >Знижки на вініл</h2>
+        <div class="row">
+            {% for product in discounted_vinyl %}
+                <div class="col-lg-3 col-md-4 col-sm-6 mb-4">
+                    <div class="card h-100">
                         {% if product.image %}
-                            <img src="{% thumbnail product.image 'small' %}" alt="{{ product.name }}" width="100" height="100">
+                            <img src="{% thumbnail product.image 'small' %}" alt="{{ product.name }}" class="card-img-top">
                         {% else %}
-                            <img src="{% get_static_prefix %}images/placeholder.jpg" alt="No Image" width="100" height="100">
+                            <img src="{% get_static_prefix %}images/placeholder.jpg" alt="No Image" class="card-img-top">
                         {% endif %}
-                        <h5 class="card-title"><a href="{{ product.get_absolute_url }}">{{ product.name }}</a></h5>
-                        <p class="card-text">{{ product.get_discounted_price }} грн</p>
-                        <p class="card-text">Виконавець: <a href="{% url 'shop:product_list' %}?artist={{ product.artist.id }}">{{ product.artist }}</a></p>
+                        <div class="card-body">
+                            <h5 class="card-title"><a href="{{ product.get_absolute_url }}">{{ product.name }}</a></h5>
+                            <p class="card-text">Ціна: <del>{{ product.price }}</del> <b style="color: #F97316;">{{ product.get_discounted_price }} грн</b></p>
+                            <p class="card-text">Виконавець: <a href="{% url 'shop:product_list' %}?artist={{ product.artist.id }}">{{ product.artist }}</a></p>
+                            <a href="{% url 'cart:add_to_cart' product_id=product.id %}" class="btn btn-primary btn-sm">Додати в кошик</a>
+                        </div>
                     </div>
                 </div>
-            </div>
-        {% endfor %}
-        <div class="col-12">
-            <a href="{% url 'shop:product_list' %}?has_discount=true" class="btn btn-primary">Переглянути всі знижки</a>
-        </div>
-    </div>
-
-    <h2>Знажки на продукти!</h2>
-    <div class="row">
-        {% for product in discounted_products %}
-        <div class="col-md-4">
-            <div class="card mb-3">
-                <div class="card-body">
-                    {% if product.image %}
-                        <img src="{% thumbnail product.image 'small' %}" alt="{{ product.name }}" width="100" height="100">
-                    {% else %}
-                        <img src="{% get_static_prefix %}images/placeholder.jpg" alt="No Image" width="100" height="100">
-                    {% endif %}
-                    <h5 class="card-title"><a href="{{ product.get_absolute_url }}">{{ product.name }}</a></h5>
-                    <p class="card-text">{{ product.get_discounted_price }} грн</p>
-                </div>
+            {% endfor %}
+            <div class="col-12 text-center">
+                <a href="{% url 'shop:product_list' %}?has_discount=true" class="btn btn-primary">Переглянути всі знижки</a>
             </div>
         </div>
-        {% endfor %}
-        <div class="col-12">
-            <a href="{% url 'shop:product_list' %}?has_discount=true" class="btn btn-primary">Переглянути всі знижки</a>
-        </div>
-    </div>
+    </section>
 
-    <h2>Нові продукти!</h2>
-    <div class="row">
-        {% for product in new_products %}
-            <div class="col-md-4">
-                <div class="card mb-3">
-                    <div class="card-body">
+    <section class="index-section">
+        <h2 class="text-center" >Знижки на продукти</h2>
+        <div class="row">
+            {% for product in discounted_products %}
+                <div class="col-lg-3 col-md-4 col-sm-6 mb-4">
+                    <div class="card h-100">
                         {% if product.image %}
-                            <img src="{% thumbnail product.image 'small' %}" alt="{{ product.name }}" width="100" height="100">
+                            <img src="{% thumbnail product.image 'small' %}" alt="{{ product.name }}" class="card-img-top">
                         {% else %}
-                            <img src="{% get_static_prefix %}images/placeholder.jpg" alt="No Image" width="100" height="100">
+                            <img src="{% get_static_prefix %}images/placeholder.jpg" alt="No Image" class="card-img-top">
                         {% endif %}
-                        <h5 class="card-title"><a href="{{ product.get_absolute_url }}">{{ product.name }}</a></h5>
-                        <p class="card-text">{{ product.get_discounted_price }} грн</p>
+                        <div class="card-body">
+                            <h5 class="card-title"><a href="{{ product.get_absolute_url }}">{{ product.name }}</a></h5>
+                            <p class="card-text">Ціна: <del>{{ product.price }}</del> <b style="color: #F97316;">{{ product.get_discounted_price }} грн</b></p>
+                            <a href="{% url 'cart:add_to_cart' product_id=product.id %}" class="btn btn-primary btn-sm">Додати в кошик</a>
+                        </div>
                     </div>
                 </div>
+            {% endfor %}
+            <div class="col-12 text-center">
+                <a href="{% url 'shop:product_list' %}?has_discount=true" class="btn btn-primary">Переглянути всі знижки</a>
             </div>
-        {% endfor %}
-        
-        <div class="col-12">
-            <a href="{% url 'shop:product_list' %}?is_new=true" class="btn btn-primary">Переглянути всі новинки</a>
         </div>
-    </div>
+    </section>
 
+    <section class="index-section">
+        <h2 class="text-center" >Нові продукти</h2>
+        <div class="row">
+            {% for product in new_products %}
+                <div class="col-lg-3 col-md-4 col-sm-6 mb-4">
+                    <div class="card h-100">
+                        {% if product.image %}
+                            <img src="{% thumbnail product.image 'small' %}" alt="{{ product.name }}" class="card-img-top">
+                        {% else %}
+                            <img src="{% get_static_prefix %}images/placeholder.jpg" alt="No Image" class="card-img-top">
+                        {% endif %}
+                        <div class="card-body">
+                            <h5 class="card-title"><a href="{{ product.get_absolute_url }}">{{ product.name }}</a></h5>
+                            <p class="card-text">Ціна: {{ product.get_discounted_price }} грн</p>
+                            <a href="{% url 'cart:add_to_cart' product_id=product.id %}" class="btn btn-primary btn-sm">Додати в кошик</a>
+                        </div>
+                    </div>
+                </div>
+            {% endfor %}
+            <div class="col-12 text-center">
+                <a href="{% url 'shop:product_list' %}?is_new=true" class="btn btn-primary">Переглянути всі новинки</a>
+            </div>
+        </div>
+    </section>
 </div>
 {% endblock %}

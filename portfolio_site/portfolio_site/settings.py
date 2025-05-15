@@ -154,8 +154,8 @@ SITE_DOMAIN = 'http://127.0.0.1:8000'   #домен цього сайту
 
 THUMBNAIL_ALIASES = {
     '': {
-        'small': {'size': (100, 100)},
-        'medium': {'size': (200, 200)},
+        'small': {'size': (300, 300)},
+        'medium': {'size': (500, 500)},
         'avatar': {'size': (150, 150)},
         'comment_avatar': {'size': (50, 50)},
         'cart': {'size': (50, 50)},
