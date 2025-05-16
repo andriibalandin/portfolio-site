@@ -11,11 +11,12 @@
                 <div class="col-lg-3 col-md-4 col-sm-6 mb-4">
                     <div class="card h-100">
                         {% if product.image %}
-                            <img src="{% thumbnail product.image 'small' %}" alt="{{ product.name }}" class="card-img-top">
+                            <a href="{{ product.get_absolute_url }}"><img src="{% thumbnail product.image 'small' %}" alt="{{ product.name }}" class="card-img-top"></a>
                         {% else %}
-                            <img src="{% get_static_prefix %}images/placeholder.jpg" alt="No Image" class="card-img-top">
+                            <a href="{{ product.get_absolute_url }}"><img src="{% get_static_prefix %}images/placeholder.jpg" alt="No Image" class="card-img-top"></a>
                         {% endif %}
                         <div class="card-body">
+                            <h5 class="card-title" style="color: red;">НОВИНКА!</h5>
                             <h5 class="card-title"><a href="{{ product.get_absolute_url }}">{{ product.name }}</a></h5>
                             <p class="card-text">Ціна: {{ product.get_discounted_price }} грн</p>
                             <p class="card-text">Виконавець: <a href="{% url 'shop:product_list' %}?artist={{ product.artist.id }}">{{ product.artist }}</a></p>
@@ -37,9 +38,9 @@
                 <div class="col-lg-3 col-md-4 col-sm-6 mb-4">
                     <div class="card h-100">
                         {% if product.image %}
-                            <img src="{% thumbnail product.image 'small' %}" alt="{{ product.name }}" class="card-img-top">
+                            <a href="{{ product.get_absolute_url }}"><img src="{% thumbnail product.image 'small' %}" alt="{{ product.name }}" class="card-img-top"></a>
                         {% else %}
-                            <img src="{% get_static_prefix %}images/placeholder.jpg" alt="No Image" class="card-img-top">
+                            <a href="{{ product.get_absolute_url }}"><img src="{% get_static_prefix %}images/placeholder.jpg" alt="No Image" class="card-img-top"></a>
                         {% endif %}
                         <div class="card-body">
                             <h5 class="card-title"><a href="{{ product.get_absolute_url }}">{{ product.name }}</a></h5>
@@ -63,9 +64,9 @@
                 <div class="col-lg-3 col-md-4 col-sm-6 mb-4">
                     <div class="card h-100">
                         {% if product.image %}
-                            <img src="{% thumbnail product.image 'small' %}" alt="{{ product.name }}" class="card-img-top">
+                            <a href="{{ product.get_absolute_url }}"><img src="{% thumbnail product.image 'small' %}" alt="{{ product.name }}" class="card-img-top"></a>
                         {% else %}
-                            <img src="{% get_static_prefix %}images/placeholder.jpg" alt="No Image" class="card-img-top">
+                            <a href="{{ product.get_absolute_url }}"><img src="{% get_static_prefix %}images/placeholder.jpg" alt="No Image" class="card-img-top"></a>
                         {% endif %}
                         <div class="card-body">
                             <h5 class="card-title"><a href="{{ product.get_absolute_url }}">{{ product.name }}</a></h5>
@@ -88,9 +89,9 @@
                 <div class="col-lg-3 col-md-4 col-sm-6 mb-4">
                     <div class="card h-100">
                         {% if product.image %}
-                            <img src="{% thumbnail product.image 'small' %}" alt="{{ product.name }}" class="card-img-top">
+                            <a href="{{ product.get_absolute_url }}"><img src="{% thumbnail product.image 'small' %}" alt="{{ product.name }}" class="card-img-top"></a>
                         {% else %}
-                            <img src="{% get_static_prefix %}images/placeholder.jpg" alt="No Image" class="card-img-top">
+                            <a href="{{ product.get_absolute_url }}"><img src="{% get_static_prefix %}images/placeholder.jpg" alt="No Image" class="card-img-top"></a>
                         {% endif %}
                         <div class="card-body">
                             <h5 class="card-title"><a href="{{ product.get_absolute_url }}">{{ product.name }}</a></h5>

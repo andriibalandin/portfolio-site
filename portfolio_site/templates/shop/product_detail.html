@@ -5,25 +5,27 @@
     <div class="row">
         <div class="col-md-4">
             {% if product.image %}
-                <img src="{% thumbnail product.image 'medium' %}" alt="{{ product.name }}" class="img-fluid">
+                <img src="{% thumbnail product.image 'detail' %}" alt="{{ product.name }}" class="fluid-thumbnail">
             {% else %}
                 <img src="{% get_static_prefix %}images/placeholder.jpg" alt="No Image" class="img-fluid">
             {% endif %}
         </div>
         <div class="col-md-8">
             <h1>{{ product.name }}</h1>
+            <p><a href="{% url 'shop:product_list' %}?category={{ product.category.id }}">{{ product.category.name }}</a></p>
             <p>{{ product.description }}</p>
             {% if product.get_discounted_price == product.price %}
-                <p class="card-text">Ціна: {{ product.get_discounted_price }} грн</p>
+                <p>Ціна: {{ product.get_discounted_price }} грн</p>
             {% else %}
-                <p class="card-text">Ціна: <del>{{ product.price }}</del> <b style="color: #F97316;">{{ product.get_discounted_price }} грн (ЗНИЖКА -{{ product.discount }}%)</b></p>
+                <p>Ціна: <del>{{ product.price }}</del> <b style="color: #F97316;">{{ product.get_discounted_price }} грн (ЗНИЖКА -{{ product.discount }}%)</b></p>
             {% endif %}
+            <p>Виробник: <a href="{% url 'shop:product_list' %}?manufacturer={{ product.manufacturer.id }}">{{ product.manufacturer }}</a></p>
             <p>Наявність: {% if product.is_available and product.quantity > 0 %}В наявності ({{ product.quantity }} шт.){% else %}Немає в наявності{% endif %}</p>
             <p>Середній рейтинг: {{ product.rating }}</p>
             {% if product.category.slug == 'vinyl-records' %}
-                <p>Виконавець: {{ product.artist }}</p>
+                <p>Виконавець: <a href="{% url 'shop:product_list' %}?artist={{ product.artist.id }}">{{ product.artist }}</a></p>
                 <p>Рік випуску: {{ product.release_year }}</p>
-                <p>Жанр: {{ product.genre.all|join:", " }}</p>
+                <p>Жанр: {% for genre in product.genre.all %}<a href="{% url 'shop:product_list' %}?genre={{ product.genre.id }}">{{ genre }} </a>{% endfor %}</p>
             {% endif %}
             <div class="mt-3">
                 {% if user.is_authenticated %}
@@ -43,6 +45,16 @@
     <hr class="my-5">
 
     <h3>Відгуки</h3>
+    {% if user.is_authenticated %}
+        <h4 class="mt-4">{{ existing_review|yesno:"Редагувати відгук,Додати відгук" }}</h4>
+        <form method="post" class="card p-4">
+            {% csrf_token %}
+            {{ review_form.as_p }}
+            <button type="submit" class="btn btn-primary">{{ existing_review|yesno:"Зберегти зміни,Надіслати" }}</button>
+        </form>
+    {% else %}
+        <p><a href="{% url 'users:login' %}">Увійдіть</a>, щоб залишити відгук.</p>
+    {% endif %}
     {% if product.reviews.exists %}
         {% for review in page_obj %}
             <div class="card mb-3">
@@ -76,17 +88,6 @@
         {% endif %}
     {% else %}
         <p>Відгуки відсутні.</p>
-    {% endif %}
-
-    {% if user.is_authenticated %}
-        <h4 class="mt-4">{{ existing_review|yesno:"Редагувати відгук,Додати відгук" }}</h4>
-        <form method="post" class="card p-4">
-            {% csrf_token %}
-            {{ review_form.as_p }}
-            <button type="submit" class="btn btn-primary">{{ existing_review|yesno:"Зберегти зміни,Надіслати" }}</button>
-        </form>
-    {% else %}
-        <p><a href="{% url 'users:login' %}">Увійдіть</a>, щоб залишити відгук.</p>
     {% endif %}
 </div>
 {% endblock %}

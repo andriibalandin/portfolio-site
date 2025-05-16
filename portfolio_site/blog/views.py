@@ -16,7 +16,7 @@ class PostListView(ListView):
     model = Post
     template_name = 'blog/post_list.html'
     context_object_name = 'posts'
-    paginate_by = 5
+    paginate_by = 7
 
     def get_queryset(self):
         queryset = Post.objects.all().select_related('author', 'category').prefetch_related('tags')
@@ -37,6 +37,8 @@ class PostCreateView(LoginRequiredMixin, CreateView):
     fields = ['title', 'content', 'category', 'tags']
 
     def dispatch(self, request, *args, **kwargs):
+        if not request.user.is_authenticated:
+            return self.handle_no_permission()
         if not Subscription.objects.filter(user=request.user, is_active=True).exists():
             return redirect('users:subscribe')  
         return super().dispatch(request, *args, **kwargs)

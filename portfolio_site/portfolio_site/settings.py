@@ -143,7 +143,7 @@ EMAIL_HOST = 'smtp.gmail.com'
 EMAIL_PORT = 587
 EMAIL_USE_TLS = True
 EMAIL_HOST_USER = 'justanothermailidhwhoiam@gmail.com'  #пошта з якої відправляються листи
-EMAIL_HOST_PASSWORD = 'woho pawt dgti wzpt'  #пароль додатку з пошти
+EMAIL_HOST_PASSWORD =  os.getenv('EMAIL_HOST_PASSWORD') #пароль додатку з пошти
 
 #stripe
 STRIPE_PUBLISHABLE_KEY = ''  #тестовий publishable key
@@ -159,6 +159,7 @@ THUMBNAIL_ALIASES = {
         'avatar': {'size': (150, 150)},
         'comment_avatar': {'size': (50, 50)},
         'cart': {'size': (50, 50)},
+        'detail': {'size': (1000, 1000)},
     },
 }
 

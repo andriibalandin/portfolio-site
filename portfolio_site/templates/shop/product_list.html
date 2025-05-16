@@ -66,11 +66,12 @@
                 <div class="col-lg-3 col-md-4 col-sm-6 mb-4">
                     <div class="card h-100">
                         {% if product.image %}
-                            <img src="{% thumbnail product.image 'small' %}" alt="{{ product.name }}" class="card-img-top">
+                            <a href="{{ product.get_absolute_url }}"><img src="{% thumbnail product.image 'small' %}" alt="{{ product.name }}" class="card-img-top"></a>
                         {% else %}
-                            <img src="{% get_static_prefix %}images/placeholder.jpg" alt="No Image" class="card-img-top">
+                            <a href="{{ product.get_absolute_url }}"><img src="{% get_static_prefix %}images/placeholder.jpg" alt="No Image" class="card-img-top"></a>
                         {% endif %}
                         <div class="card-body">
+                            {% if product.is_new == True %} <h5 class="card-title" style="color: red;">НОВИНКА!</h5> {% endif %}
                             {% if product.category.slug == 'vinyl-records' %}
                                 <h5 class="card-title"><a href="{{ product.get_absolute_url }}">{{ product.artist }} - {{ product.name }}</a></h5>
                             {% else %}

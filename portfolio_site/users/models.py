@@ -26,8 +26,8 @@ class TrackedProduct(models.Model):
 
 class Subscription(models.Model):
     PLAN_CHOICES = (
-        ('monthly', 'Monthly'),
-        ('yearly', 'Yearly'),
+        ('monthly', 'Місячний план - 200грн/місяць'),
+        ('yearly', 'Річний план - 2000грн/рік'),
     )
     user = models.ForeignKey(User, on_delete=models.CASCADE)
     plan = models.CharField(max_length=20, choices=PLAN_CHOICES, default='monthly')

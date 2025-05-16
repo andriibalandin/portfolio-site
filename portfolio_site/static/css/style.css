@@ -82,8 +82,8 @@ a:hover {
 
 .btn-primary, .btn-secondary {
     background-color: #FFFFFF;
-    border: 2px solid #2563EB;
-    color: #1F2937;
+    border: 2px solid #000000;
+    color: #000000;
 }
 
 .btn-primary:hover, .btn-secondary:hover {
@@ -97,12 +97,18 @@ a:hover {
     padding: 0.5rem 1rem;
 }
 
+.fluid-thumbnail {
+    width: 100%;
+    height: auto;
+    object-fit: cover; 
+}
+
 /* Картки (плитковий стиль) */
 .card {
     border: none;
     background-color: #F9FAFB;
     box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-    border: 2px solid #1F2937;
+    border: 2px solid #000000;
     border-radius: 0 !important;
     margin-bottom: 1.5rem;
     transition: transform 0.3s ease;
@@ -117,7 +123,7 @@ a:hover {
 }
 
 .card-img-top {
-    border-bottom: 2px solid #1F2937;
+    border-bottom: 2px solid #000000;
     border-radius: 0 !important;
 }
 
@@ -137,7 +143,7 @@ a:hover {
 
 .form-control, .form-select {
     border-radius: 0 !important;
-    border: 2px solid #1F2937;
+    border: 2px solid #000000;
     padding: 0.75rem;
     font-size: 1rem;
     height: 2.5rem;
@@ -177,7 +183,7 @@ th, td {
 }
 
 th {
-    background-color: #1F2937;
+    background-color: #080b0f;
     color: #F9FAFB;
     font-weight: 600;
 }
@@ -190,7 +196,7 @@ td a:hover {
 .pagination .page-link {
     border-radius: 0 !important;
     color: #F97316;
-    border: 1px solid #1F2937;
+    border: 1px solid #000000;
     margin: 0 0.25rem;
     padding: 0.5rem 1rem;
 }
@@ -238,9 +244,9 @@ img {
 .filter-section {
     background-color: #F9FAFB;
     padding: 1.5rem;
-    border: 2px solid #1F2937;
+    border: 2px solid #000000;
     box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-    color: #1F2937;
+    color: #0c1016;
 }
 
 .filter-section .form-label {
@@ -268,8 +274,8 @@ img {
     display: inline-block;
     padding: 0.75rem 1.5rem;
     background-color: #FFFFFF;
-    border: 2px solid #2563EB;
-    color: #1F2937;
+    border: 2px solid #000000;
+    color: #000000;
     font-weight: 600;
     margin-right: 1rem;
     transition: background-color 0.3s ease, color 0.3s ease, border-color 0.3s ease;
@@ -283,7 +289,7 @@ img {
 
 /* Блог */
 .blog-post .card {
-    border: 2px solid #1F2937;
+    border: 2px solid #000000;
     border-radius: 0 !important;
 }
 
@@ -305,7 +311,7 @@ img {
     display: inline-block;
     padding: 0.75rem 1.5rem;
     background-color: #FFFFFF;
-    border: 2px solid #2563EB;
+    border: 2px solid #000000;
     color: #1F2937;
     font-weight: 600;
     margin: 0.5rem 0;
@@ -325,17 +331,17 @@ img {
 
 .select2-container--default .select2-selection--single {
     border-radius: 0 !important;
-    border: 2px solid #1F2937;
-    padding: 0.5rem;
+    border: 2px solid #000000;
+    padding: 0.2rem;
     font-size: 0.9rem;
     height: 2.5rem;
 }
 
 .select2-container--default .select2-selection--multiple {
     border-radius: 0 !important;
-    border: 2px solid #1F2937;
-    padding: 0.5rem;
-    padding-bottom: 0.5rem;
+    border: 2px solid #000000;
+    padding: 0.2rem;
+    padding-bottom: 0.2rem;
     font-size: 0.9rem;
     max-width: 100%;
     overflow-x: auto;
@@ -411,20 +417,4 @@ img {
     h1 { font-size: 2rem; }
     h2 { font-size: 1.5rem; }
 
-    .banner h1 {
-        font-size: 1.8rem;
-    }
-
-    .banner p {
-        font-size: 1rem;
-    }
-
-    .banner-content {
-        padding: 1rem;
-    }
-
-    .banner {
-        min-height: 500px;
-        padding: 2rem 1rem;
-    }
 }
