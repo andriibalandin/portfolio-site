@@ -1,5 +1,5 @@
 from django.contrib import admin
-from .models import Category, Product, Genre, Artist, Manufacturer
+from .models import Category, Product, Genre, Artist, Manufacturer, Review
 
 
 @admin.register(Category)
@@ -30,3 +30,8 @@ class ManufacturerAdmin(admin.ModelAdmin):
 class ProductAdmin(admin.ModelAdmin):
     list_display = ['name', 'price', 'discount', 'is_new', 'release_year', 'is_available', 'quantity']
     prepopulated_fields = {'slug': ('name',)}
+
+@admin.register(Review)
+class ReviewAdmin(admin.ModelAdmin):
+    list_display = ['rating', 'comment', 'product', 'user']
+    
