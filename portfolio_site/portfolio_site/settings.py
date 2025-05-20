@@ -26,7 +26,10 @@ SECRET_KEY = 'django-insecure-v)n=sit9n8r&52@c&rpvh49v6u(3ix-q95bx)%44yuib*3df+5
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = [
+    '127.0.0.1',
+    '123.pythonanywhere.com',
+]
 
 
 # Application definition
@@ -124,6 +127,7 @@ USE_TZ = True
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/5.2/howto/static-files/
 
+STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
 STATIC_URL = 'static/'
 STATICFILES_DIRS = [os.path.join(BASE_DIR, 'static')]
 
@@ -142,15 +146,15 @@ EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
 EMAIL_HOST = 'smtp.gmail.com'
 EMAIL_PORT = 587
 EMAIL_USE_TLS = True
-EMAIL_HOST_USER = 'justanothermailidhwhoiam@gmail.com'  #пошта з якої відправляються листи
+EMAIL_HOST_USER = os.getenv('EMAIL_HOST_USER')  #пошта з якої відправляються листи
 EMAIL_HOST_PASSWORD =  os.getenv('EMAIL_HOST_PASSWORD') #пароль додатку з пошти
 
 #stripe
-STRIPE_PUBLISHABLE_KEY = ''  #тестовий publishable key
-STRIPE_SECRET_KEY = ''      #тестовий secret key
-STRIPE_PRICE_ID_MONTHLY = 'price_1RNsHWPMBzLVC7yQGGJJGkls'   #ID ціни для місячної підписки
-STRIPE_PRICE_ID_YEARLY = 'price_1RNsIMPMBzLVC7yQUI8RwU0R'    #ID ціни для річної підписки
-SITE_DOMAIN = 'http://127.0.0.1:8000'   #домен цього сайту
+STRIPE_PUBLISHABLE_KEY = os.getenv('STRIPE_PUBLISHABLE_KEY')  #тестовий publishable key
+STRIPE_SECRET_KEY = os.getenv('STRIPE_SECRET_KEY')       #тестовий secret key
+STRIPE_PRICE_ID_MONTHLY = os.getenv('STRIPE_PRICE_ID_MONTHLY')   #ID ціни для місячної підписки
+STRIPE_PRICE_ID_YEARLY = os.getenv('STRIPE_PRICE_ID_YEARLY')    #ID ціни для річної підписки
+SITE_DOMAIN = os.getenv('SITE_DOMAIN', 'http://127.0.0.1:8000')   #домен цього сайту
 
 THUMBNAIL_ALIASES = {
     '': {
